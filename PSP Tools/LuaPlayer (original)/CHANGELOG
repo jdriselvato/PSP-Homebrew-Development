@@ -1,0 +1,170 @@
+v0.20
+==========
+ - updated for gcc 4.1 and Lua 5.1. Some things you need to change for 5.1:
+    - change table iteration code:
+      "for i, value in someTable do" to
+      "for i, value in ipairs(someTable) do"
+      (but use "pairs" for tables like "t={foo=bar, foobar=99}"
+       and "ipairs" for tables like "t={foo, bar}")
+    - it's pure Lua 5.1: no binary operators and double as number type
+      (e.g. now you can use one number for storing IP addresses)
+ - Sound.load doesn't crash any more on invalid filenames
+ - fixed problems with daylight saving time
+ - Font:getTextSize fixed. Test case:
+    proportional = Font.createProportional()
+    proportional:setPixelSizes(0,8) 
+    test = proportional:getTextSize('some text')
+    assert(test.width == 39)
+    assert(test.height == 6)
+ - blit operation from screen to image works now, e.g.:
+     screen:print(10, 10, "hello", Color.new(255,255,255))
+     image = Image.createEmpty(480, 272)
+     image:blit(0, 0, screen, 480, 272, 480, 272, true)
+   and now you have an "image" with the text "hello"
+ - TTF font plotting to images now sets the alpha value to opaque, so
+   you can write e.g. something like this for buffering texts in images:
+     image = Image.createEmpty(400, 200)
+     proportional = Font.createProportional()
+     proportional:setPixelSizes(0, 16)
+     image:fontPrint(proportional, 0, 20, 'Hello', Color.new(0, 255, 0))
+     screen:blit(0, 0, image)
+     screen:blit(3, 3, image)
+ - new function Image.loadFromMemory for loading images from memory:
+     jpegFile = io.open("test.jpg", "rb")
+     data = jpegFile:read("*a")
+     jpegFile:close()
+     image = Image.loadFromMemory(data)
+   PNG and JPEG is supported and autodetected
+ - image-to-image blitting now uses alpha full blending [Callum Bethune]
+ - System.rename(oldName, newName) for renaming files and directories
+
+v0.19
+==========
+ - directory detection bugfix [moonlight]
+ - Changed System.loadModule to loadlib to work. [Oobles]
+   the same as the traditional lua loadlib function.
+ - Made loadlib check if a module is already loaded before trying
+   to load. [Oobles]
+ - Removed getLuaState export. No longer required. [Oobles]
+ - Made debugOutput work in the same way as printf in bootstrap. [Oobles]
+ - Added loadlib.prx kernel module. required for module loading. [Oobles]
+ - Added a module sample for manipulating images [Shine]
+
+v0.18alpha (blame Oobles for all changes)
+================================================
+ - Moved all kernel dependant code into bootstrap code.
+ - Moved all of luaplayer into a user mode prx module.
+ - Removed the stdio redirection.
+ - Made runScript return its error message to main.
+ - Exported all lua functions from luaplayer module.
+ - Made debugOutput work in the same was as printf.
+ - Added System.loadModule function to dynamically load LRX modules.
+ - Added an example simple.lrx module as template.
+ - Changed Makefiles to support new bootstrap code.
+ - Added an example sound.lrx module which moves all sound out
+   of main luaplayer.  In theory could remove it completely from
+   luaplayer and load it only when required.  Same could apply
+   for other modules.
+
+v0.17
+==========
+ - Wlan.useConnectionConfig bugfix: doesn't lock up anymore on error [Elxx]
+
+v0.16 (all changes for this version by Shine)
+================================================
+ - Wlan:getIPAddress bugfix: now it returns nil on error and the
+   IP address otherwise
+ - DNS resolving. Now you can write
+   Socket.connect("www.luaplayer.org", 80) instead of
+   Socket.connect("212.227.39.202", 80),
+   thanks to ideas how to use the resolver lib from PSPRadio
+ - when loading JPEGs, the file was not closed
+ - System.md5sum bugfixing for the Windows version
+ - Wlan.useConnectionConfig index is 1 based instead of 0 based, like usual in Lua
+ - System.powerTick added: this prevents power off, now you can nail
+   your PSP on a wall for your electronic painting :-)
+ - System.createDirectory, System.removeDirectory and System.removeFile added
+
+v0.15
+==========
+ - timer bug fixed (was bug in PSPSDK) [mrbrown]
+ - wlan socket support (based on PspPet's "WiFi Multi-Test .03") [Shine]
+ - changed sceGu* and sceGum* functions to Gu.* and Gum.* [Shine]
+ - System.getFreeMemory added [Shine]
+ - Freetype added, with 2 default fonts (see http://www.gnome.org/fonts/ for the licence) [Shine]
+
+v0.14
+==========
+ - IrDA support [Shine]
+ - Windows Emulator [sweetlilmre]
+     sceIoD* functionality added for System.listDirectory().
+     sceGuClearColor and sceGuClear implemented.
+     flicker reduction via GL / PSP drawing sync
+     attempt to improve sound sync by yeilding in glutIdleFunc() func.
+ - possible signed bug for timer fixed [Shine]
+
+v0.13
+==========
+ - screen:clear bugfix (was always black) [Shine]
+ - updated Windows version with sound [sweetlilmre]
+ - JPEG image/screen load and save functionality [Shine]
+
+v0.12
+==========
+ - pixel format changed to true color [Durante / Shine]
+ - initial GU mapping [Shine]
+
+v0.11 (all changes for this version by Shine)
+================================================
+ - Added System.md5sum and filelist.txt debug ouput on startup failure in boot.lua
+ - changed case sensitivity handling in boot.lua for problems with Windows 98
+ - now Image.createEmpty accepts 512x512 pixel sizes
+ - internal image width and height needs not to be the same size
+ - max image size can be 512x512 now (larger are not allowed with GU blit)
+ - System.sioInit, sioWrite and sioRead implemented for serial port support
+   (see http://www.luaplayer.org/sio/readme.html and http://nil.rpc1.org/psp/remote.html
+    for information about the hardware interface)
+ - new Timer class and System.sleep function
+ - fixed timezone bug
+ - moved Starfield and SIO Echo example to Applications
+
+v0.10
+==========
+ - Added the "Bitwise operators and hexadecimal support" patch from
+   http://lua-users.org/wiki/LuaPowerPatches :
+        - Hexadecimal support for 0xXXX in numeric literals. 
+        - Hexadecimal support for '\xXX' characters within strings. 
+        - Infix bitwise operators for AND (&), OR (|) and XOR (#). 
+        - Unary bitwise negation using # alone.  [Shine]
+ - Changed the number type to float (more than 4 times faster calculations) 
+   (requires recompilation of the lua libraries from svn) [Shine]
+ - "save" function writes PNG format now [Shine]
+ - Restructured files into src/ [Nevyn]
+ - Changed the main script file to System/system.lua [Nevyn]
+ - Rewrote the Makefiles and readmes to be more user-friendly.  [Nevyn]
+ - Changed startup load sequence (see the lua dev readme) [Nevyn]
+ - Made a procedure for making standalone LP apps [Nevyn]
+ - keyboard mapping fixed in PC version [Shine]
+ - bitmask operations added in controls class [Shine]
+ - added battery functions to System
+ - os.time() returns a userdata instead of a number because of problems
+   with the float-precision, so you have to use os.difftime instead of
+   doing calculations with the result
+ 
+v0.9
+==========
+- bugfixing clearImage and clearScreen [Shine]
+- sceKernelDcacheWritebackInvalidateAll only needed before sceGu functions, when reading modified main memory [Shine]
+- speed improved for fillImageRect, fillScreenRect, blitAlphaImageToImage, blitImageToImage and drawLine [Shine]
+
+v0.7
+==========
+ - Added sound and music through mikmodlib
+ - Redesigned the API (note: apps made for =<0.6 will need to be rewritten)
+ - Updated Lowser to 0.15
+ - Added functions for USB disk mode
+ - Added samples for music, rotation, fractal
+ 
+v0.6 and earlier
+========
+(Undocumented)

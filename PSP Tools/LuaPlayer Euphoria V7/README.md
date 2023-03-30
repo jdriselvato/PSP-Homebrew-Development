@@ -6,8 +6,6 @@ Based on LuaPlayer v0.20 by Shine | [Official forums](http://www.retroemu.com/fo
 
 # Documentation
 
-**NOTE:** This is the original LuaPlayer Euphoria V7 documentation but updated for markdown and cleaned up.
-
 ### SCREEN
 
 #### Initialize screen:
@@ -65,6 +63,43 @@ System.osk(description, initalText) - Shows the Sony OSK.
 Controls.ReadPeek() -- Same as Controls.Read() except it doesn't cap the Framerate to 60FPS
 ```
 
+#### Buttons:
+
+Using `local controls = Controls.ReadPeek()`:
+
+```
+Bool controls:select()
+Bool controls:start()
+Bool controls:up()
+Bool controls:right()
+Bool controls:down()
+Bool controls:left()
+Bool controls:l()
+Bool controls:r()
+Bool controls:triangle()
+Bool controls:circle()
+Bool controls:cross()
+Bool controls:square()
+Bool controls:home()
+Bool controls:hold()
+Bool controls:note()
+```
+
+#### Analog stick:
+
+```
+Number controls:analogX() -- ranges from -127 to 128. 
+Number controls:analogY() -- ranges from -127 to 128.  
+```
+
+#### Mutliple buttons
+
+```
+Number controls:buttons() -- returns the bitmask like sceCtrlReadBufferPositive reads it 
+```
+
+
+
 ### IntraFont
 
 ```
@@ -93,7 +128,7 @@ Supported formats : `MP3`, `At3`, `Ogg` & `WAV`. All formats (except `WAV`) play
 - The channels you may use range from 0 > 30. 
 - If you try to load or play a `WAV` in a channel over the maximum value, lua will return an error.
 
-#### Mp3 Functions:
+#### MP3 Functions:
 
 ```
 Mp3.load(fileName, channel) --Loads an Mp3 file.
@@ -132,7 +167,7 @@ Ogg.speed(speed, channel) - Set the playback speed of the currently playing Ogg 
 Ogg.endOfStream(speed, channel) - Returns true upon the Ogg file reaching the end of its stream (Ogg finishing).
 ```
 
-#### Wav Functions
+#### WAV Functions
 
 ```
 Wav.load(fileName, channel) --Loads an Wav file.

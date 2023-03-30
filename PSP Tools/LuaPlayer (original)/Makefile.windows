@@ -1,0 +1,25 @@
+TARGET=luaplayer
+
+OBJS = src/graphics.o src/sound.o src/luaplayer.o src/luacontrols.o src/luagraphics.o src/luasound.o src/luasystem.o src/utility.o \
+	src/luatimer.o src/emulator/emulator.o src/emulator/framebuffer.o src/emulator/windows/windows.o src/emulator/md5.o
+  
+LDFLAGS = -lglut32 -lglu32 -llua -llualib -lopengl32 -lpng -ljpeg -lkernel32 -lmikmod -lmmio -lwinmm
+CFLAGS = -I$(PSPSDK)/sdk/include -I$(PSPSDK)/include -Isrc
+
+# Add in PSPSDK includes and libraries.
+INCDIR   := $(INCDIR) . $(PSPSDK)/include
+LIBDIR   := $(LIBDIR) . /usr/local/lib
+
+CFLAGS   := $(addprefix -I,$(INCDIR)) $(CFLAGS)
+CXXFLAGS := $(CFLAGS) $(CXXFLAGS)
+LDFLAGS  := $(addprefix -L,$(LIBDIR)) $(LDFLAGS)
+
+FINAL_TARGET = $(TARGET).exe
+
+all: $(FINAL_TARGET)
+
+$(TARGET).exe: $(OBJS)
+	$(LINK.c) $^ $(LDFLAGS) -o $@
+    
+clean: 
+	rm -f luaplayer.exe $(OBJS)

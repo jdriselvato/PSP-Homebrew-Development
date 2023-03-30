@@ -1,0 +1,42 @@
+BUILD_PRX=1
+PRX_EXPORTS=src/exports.exp
+
+TARGET = luaplayer
+OBJS = src/graphics.o src/sound.o src/luaplayer.o src/utility.o src/main.o src/framebuffer.o \
+	src/luacontrols.o src/luagraphics.o src/luasound.o src/luatimer.o src/luasystem.o src/luawlan.o src/lua3d.o loadlib.o
+INCDIR =
+CFLAGS = -G0 -Wall -O0 -fno-strict-aliasing -mno-explicit-relocs $(EXTRA_CFLAGS) $(shell freetype-config --cflags)
+CXXFLAGS = $(CFLAGS) -fno-exceptions -fno-rtti
+ASFLAGS = $(CFLAGS)
+LIBDIR =
+LDFLAGS =
+LIBS=  -llua -llualib -lpng -ljpeg -lz -lpspgum -lm -lmikmod -lmmio $(shell freetype-config --libs) \
+	-lpsprtc -lpspaudiolib -lpspaudio -lpspusb -lpspusbstor -lpsppower \
+	-lpspwlan -lpspgu -lpspdebug -lpsphprm_driver
+# TODO: without -lpspsdk it says: libpspsdk.a(inethelper.o): In function `pspSdkInetInit': inethelper.c:67: undefined reference to `sceNetInit'
+
+EXTRA_CLEAN = moreclean
+PSPSDK=$(shell psp-config --pspsdk-path)
+
+include $(PSPSDK)/lib/build.mak
+
+loadlib.S: modules/loadlib/exports.exp
+	$(shell psp-config --pspdev-path)/bin/psp-build-exports --build-stubs $<
+
+src/main.o: boot.cpp vera.cpp veraMono.cpp
+
+boot.cpp: src/auxiliary/boot.lua
+	$(shell psp-config --pspdev-path)/bin/bin2c $< $@ bootString
+
+vera.cpp: src/auxiliary/Vera.ttf
+	$(shell psp-config --pspdev-path)/bin/bin2c $< $@ ttfVera
+
+veraMono.cpp: src/auxiliary/VeraMono.ttf
+	$(shell psp-config --pspdev-path)/bin/bin2c $< $@ ttfVeraMono
+
+.PHONY: moreclean
+moreclean:
+	-rm -f boot.cpp
+	-rm -f vera.cpp
+	-rm -f veraMono.cpp
+

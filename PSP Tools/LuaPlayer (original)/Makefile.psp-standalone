@@ -1,0 +1,19 @@
+APPSHORTNAME = customgamename--change
+APPLONGNAME = Your Custom Game Name -- change this
+
+TARGET = $(APPSHORTNAME)
+
+PSP_EBOOT_TITLE = $(APPLONGNAME)
+PSP_EBOOT_ICON = standalone/title-icon.png
+
+include Makefile.psp.common
+
+release: all kxploit # note - does not include binary; see release10 & 15
+	cp -R System/Library $(APPSHORTNAME)/System/
+	cp -R standalone/app/* $(APPSHORTNAME)/
+	-find $(APPSHORTNAME) -name ".svn" -exec rm -rfv '{}' ";"
+	
+release10: release
+	cp -R EBOOT.PBP $(APPSHORTNAME)/
+	
+release15: release

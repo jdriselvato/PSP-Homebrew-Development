@@ -1,0 +1,81 @@
+TARGET = luaplayer
+VERSION = 0.20
+
+RELEASEF = "LuaPlayer v$(VERSION)"
+RELEASEFOLDER = build/$(RELEASEF)
+
+PSP_EBOOT_TITLE = Lua Player v$(VERSION)
+PSP_EBOOT_ICON = title-icon.png
+
+include Makefile.psp.common
+
+release: all # note - does not include binary; see release10 & 15
+	make -C modules release
+	mkdir -p $(RELEASEFOLDER)/luaplayer
+	cp -R Applications $(RELEASEFOLDER)/luaplayer/
+	cp -R System $(RELEASEFOLDER)/luaplayer/
+	cp -R doc $(RELEASEFOLDER)/Documentation
+	cp -R samples $(RELEASEFOLDER)/Samples
+	cp -R Readme* $(RELEASEFOLDER)/
+	cp -R CHANGELOG $(RELEASEFOLDER)/Changes.txt
+	cp -R LICENSE $(RELEASEFOLDER)/License.txt
+	-find $(RELEASEFOLDER) -name ".svn" -exec rm -rfv '{}' ";"
+	
+release10: release
+	make -C bootstrap EBOOT.PBP
+	mkdir -p $(RELEASEFOLDER)/luaplayer
+	cp bootstrap/EBOOT.PBP $(RELEASEFOLDER)/luaplayer/EBOOT.PBP
+	cp luaplayer.prx $(RELEASEFOLDER)/luaplayer
+	cp modules/loadlib.prx $(RELEASEFOLDER)/luaplayer
+	cp modules/*.lrx $(RELEASEFOLDER)/luaplayer
+	-cd build && zip -r "LuaPlayer_v$(VERSION)_firmware10".zip $(RELEASEF)
+	
+release15: release
+	make -C bootstrap kxploit
+	mkdir -p $(RELEASEFOLDER)/luaplayer
+	mkdir -p $(RELEASEFOLDER)/luaplayer%
+	cp bootstrap/luaboot/EBOOT.PBP $(RELEASEFOLDER)/luaplayer/EBOOT.PBP
+	cp bootstrap/luaboot%/EBOOT.PBP $(RELEASEFOLDER)/luaplayer%/EBOOT.PBP
+	cp luaplayer.prx $(RELEASEFOLDER)/luaplayer
+	cp modules/loadlib.prx $(RELEASEFOLDER)/luaplayer
+	cp modules/*.lrx $(RELEASEFOLDER)/luaplayer
+	-cd build && zip -r "LuaPlayer_v$(VERSION)_firmware15".zip $(RELEASEF)
+
+release-all: release10 release15
+
+nightly10: release10
+	mv build/"LuaPlayer_v$(VERSION)_firmware10".zip build/"LuaPlayer_`date +"%Y%m%d"`_firmware10".zip
+	/usr/local/bin/svn info | grep "Last Changed" > build/nightly-info
+	zip -m build/"LuaPlayer_`date +"%Y%m%d"`_firmware10".zip build/nightly-info
+
+nightly15: release15 nightly
+	mv build/"LuaPlayer_v$(VERSION)_firmware15".zip build/"LuaPlayer_`date +"%Y%m%d"`_firmware15".zip
+	/usr/local/bin/svn info | grep "Last Changed" > build/nightly-info
+	zip -m build/"LuaPlayer_`date +"%Y%m%d"`_firmware15".zip build/nightly-info
+
+nightly-all: nightly10 nightly15
+
+clean-builds:
+	-rm -rf luaplayer luaplayer% 
+	-rm -rf build
+	
+clean-all: clean-builds clean
+	make -C bootstrap clean
+	make -C modules clean
+	
+#INSTALL_PATH = /Volumes/Untitled/PSP/GAME
+INSTALL_PATH = test
+
+install: all 
+	make -C bootstrap kxploit
+	make -C modules release
+	mkdir -p $(INSTALL_PATH)/luaplayer
+	mkdir -p $(INSTALL_PATH)/luaplayer%
+	cp bootstrap/luaboot/EBOOT.PBP $(INSTALL_PATH)/luaplayer
+	cp bootstrap/luaboot%/EBOOT.PBP $(INSTALL_PATH)/luaplayer%
+	cp luaplayer.prx $(INSTALL_PATH)/luaplayer
+	cp modules/loadlib.prx $(INSTALL_PATH)/luaplayer
+	cp modules/*.lrx $(INSTALL_PATH)/luaplayer
+	mkdir -p $(INSTALL_PATH)/luaplayer/System
+	cp -R System/system.lua $(INSTALL_PATH)/luaplayer/System/
+

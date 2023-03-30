@@ -1,0 +1,1 @@
+see http://wiki.ps2dev.org/psp:lua_player:functions for a function reference

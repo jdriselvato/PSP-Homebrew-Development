@@ -1,13 +1,16 @@
 --//## Set CPU speed
 System.setCpuSpeed(333)
 
---Font setup
-font = IntraFont.load("font.pgf")
-IntraCol = {black = 0, red = 1, blue = 2, white = 3, lightGrey = 4, grey = 5, darkGrey = 6, purple = 7, yellow  = 8, orange = 9, transparent = 10}
+-- Player
+playerSprite = Image.load("sprite.png")
+player = {}
+player.x = 40
+player.y = 200
+
 
 --//## MAIN ##\\ --
 
-while true do
+while not Controls.readPeek():start() do
 
 	--Initialize the GU (Note : Any graphical functions MUST be placed AFTER this)
 	System.draw()
@@ -33,25 +36,27 @@ while true do
 	    {name = "r", value = pad:r()},
 	}
 
-	IntraFont.print(font, 20, 12, 0.4, IntraCol.white, IntraCol.black, "Press a button:")
-
-	local buttonsPress = ""
-
 	for _, button in pairs(buttons) do
 	    if button.value then
-	    	buttonsPress = button.name .. " " .. buttonsPress
+	    	if button.name == "up" then
+	    		player.y = player.y - 1.5
+	    	elseif button.name == "down" then
+	    		player.y = player.y + 1.5
+	    	elseif button.name == "left" then
+	    		player.x = player.x - 1.5
+	    	elseif button.name == "right" then
+	    		player.x = player.x + 1.5
+	    	end
 	    end
 	end
 
-	IntraFont.print(font, 20, 30, 0.4, IntraCol.white, IntraCol.black, buttonsPress)
-	
-	--Finish the GU and Sync
-	System.endDraw()
-	
-	--Show the FPS (Note : MUST be called after System.endDraw()	
-	System.showFPS()
-	screen.flip()
+	screen:blit(player.x, player.y, playerSprite)
+
+	--Finish the GU and Sync	
+	System.endDraw();
+	screen.waitVblankStart();
+	screen.flip();
+
 end
 
-IntraFont.unLoad() -- deinit the font
 System.quit() -- Quit the application after the main loop breaks
