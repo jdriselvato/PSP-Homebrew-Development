@@ -1,32 +1,34 @@
 # LuaPlayer Euphoria V7 By Zack
 
-If you find a bug with LuaPlayer Euphoria, Please submit to the official forums : http://www.retroemu.com/forum/forumdisplay.php?f=148 or on the google code page : http://code.google.com/p/luaplayereuphoria/
+If you find a bug with LuaPlayer Euphoria, Please submit to the [official forums](http://www.retroemu.com/forum/forumdisplay.php?f=148) or on the [google code page](http://code.google.com/p/luaplayereuphoria/)
 
-Based on LuaPlayer v0.20 by Shine --
-
-Official forums : http://www.retroemu.com/forum/forumdisplay.php?f=148
+Based on LuaPlayer v0.20 by Shine | [Official forums](http://www.retroemu.com/forum/forumdisplay.php?f=148)
 
 # Documentation
 
-NOTE: This is the original LuaPlayer Euphoria V7 documentation but updated for markdown.
+**NOTE:** This is the original LuaPlayer Euphoria V7 documentation but updated for markdown and cleaned up.
 
 ### SCREEN
+
+#### Initialize screen:
 
 ```
 screen:blit(x, y, image, [alpha], [source x], [source y], [width], [height]) 
 ```
 
 - Added optional alpha level variable.
-- usage is optional when just using `(screen:blit(x, y, image)``, but when using sourcex/y you must set the alpha value.
+- usage is optional when just using `(screen:blit(x, y, image)`, but when using sourcex/y you must set the alpha value.
 - The reason it's there is so you can easilly fade images in/out.
 
+
+#### Clear screne:
+
 ```
-screen:slowClear()
+screen:clear() - clear screen
+screen:slowClear() - clear screen slow
 ```
 
-- If your having problems with the screen not clearing correctly and cannot fix it, I suggest you use this. 
-
-(Note : It is slower than using the standard screen:clear() so only use if there is no alternative)
+NOTE: If your having problems with the screen not clearing correctly and cannot fix it, use `screen:slowClear()`. It is slower than using the standard screen:clear() so only use if there is no alternative)
 
 ### IMAGE
 
