@@ -9,3 +9,7 @@ These are tools that run on your computer.
 ## Windows
 
 - Popstation GUI - Popstation converts PSX games into EBOOT format, which is playable on the PSP.
+
+## Commandline
+
+- TTF -> PGF font renderer: https://github.com/PSP-Archive/ttf2pgf
