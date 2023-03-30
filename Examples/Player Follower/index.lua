@@ -66,7 +66,7 @@ end
 
 function easeInOutFollow(currentX, currentY, targetX, targetY, time, duration)
 	-- Spacing between player and follower
-	local spacing = 20
+	local spacing = 10
 
     -- Calculate the time ratio
     local tRatio = time / duration
