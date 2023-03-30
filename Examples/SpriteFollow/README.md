@@ -1,6 +1,10 @@
-# Sprint Follow
+# Sprite Following
 
-In this example we use a easeInOut Follow algo to have a follower sprint follow the players movement
+In this example we use a easeInOut follow algo in which a follower sprite follow the players sprite.
 
 
-**NOTE:** I change to Eurphoria V8 in this example.
+# DEMO
+
+
+https://user-images.githubusercontent.com/950825/228922932-8036da84-3677-4e87-a3e0-9f9e228fd1ad.mov
+
