@@ -1,7 +1,8 @@
 
 ## Examples
 
-1. PSP Controls - print on the screen the button pressed on the PSP.
+1. PSP Controls 1 - prints button pressed on the PSP.
+2. PSP Controls 2 - prints button pressed on the PSP dynamically.
 2. Sprite follow - a simple app that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple algo.
 
 
