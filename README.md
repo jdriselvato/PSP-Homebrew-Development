@@ -1,4 +1,10 @@
 
+## Examples
+
+1. PSP Controls - print on the screen the button pressed on the PSP.
+2. Sprite follow - a simple app that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple algo.
+
+
 ## Customizing the eboot
 
 While initially testing LuaPlayer Euphoria v7 on PPSSPP, I became annoyed at the fact that every eboot has the same icon and the PPSSPP display doesn't make it obvious which icon is the one I'm working with.
