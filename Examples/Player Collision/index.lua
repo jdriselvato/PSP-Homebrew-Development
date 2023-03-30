@@ -13,7 +13,8 @@ player = {
 	y = 200,
 	width = 16,
 	height = 16,
-	lastPosition = "up"
+	lastPosition = "up",
+	movement = 1.5
 }
 
 
@@ -60,44 +61,59 @@ function movePlayer()
 
 	for _, button in pairs(buttons) do
 		if button.value then
-			-- Check for collision
-			if checkCollision(player, sign) then
-			    -- Handle collision
-			    if player.x < sign.x then -- from left
-			        handleCollision(player, sign, "left")
-			        IntraFont.print(font, 20, 60, 0.3, IntraCol.white, IntraCol.black, "LEFT")
-			    elseif player.x < sign.x + sign.width then -- from right
-			        handleCollision(player, sign, "right")
-			        IntraFont.print(font, 20, 60, 0.3, IntraCol.white, IntraCol.black, "RIGHT")
-			    elseif player.y < sign.y then
-			    	IntraFont.print(font, 20, 60, 0.3, IntraCol.white, IntraCol.black, "player.y < sign.y")
-			        -- handleCollision(player, sign, "up")
-			    elseif player.y < sign.y + sign.height then
-			    	IntraFont.print(font, 20, 60, 0.3, IntraCol.white, IntraCol.black, "layer.y < sign.y + sign.hei")
-			        -- handleCollision(player, sign, "down")
-			    end
+			if checkCollision(player, sign) then -- Check for collision
+				handleCollisionPlayerMovement()
 			else
-				if button.name == "up" then
-					player.y = player.y - 1.5
-				elseif button.name == "down" then
-					player.y = player.y + 1.5
-				elseif button.name == "left" then
-					player.x = player.x - 1.5
-				elseif button.name == "right" then
-					player.x = player.x + 1.5
-				end
-				player.lastPosition = button.name
+				handleNormalPlayerMovement(button)
 			end 
 		end
 	end
 end
 
--- Function to check for collision between two square sprites
-function checkCollision(player, sign)
-    if player.x + player.width > sign.x and
-       player.x < sign.x + sign.width and
-       player.y + player.height > sign.y and
-       player.y < sign.y + sign.height then
+-- Handle collision for player
+function handleCollisionPlayerMovement()
+	local fromTopOrBottom = player.lastPosition == "up" or player.lastPosition == "down"
+	if player.x < sign.x and not fromTopOrBottom then -- from left
+	    handleCollision(player, sign, "left")	    
+	elseif player.x < sign.x + sign.width and not fromTopOrBottom then -- from right
+	    handleCollision(player, sign, "right")
+	elseif player.y < sign.y then
+	    handleCollision(player, sign, "up") -- from up button
+	elseif player.y < sign.y + sign.height then
+	    handleCollision(player, sign, "down") -- from down button
+	end
+end
+
+-- Handle normal for player
+function handleNormalPlayerMovement(button)
+	if button.name == "up" then
+		player.y = player.y - player.movement
+	elseif button.name == "down" then
+		player.y = player.y + player.movement
+	elseif button.name == "left" then
+		player.x = player.x - player.movement
+	elseif button.name == "right" then
+		player.x = player.x + player.movement
+	end
+	player.lastPosition = button.name
+end
+
+-- Function to check for collision between two sprites
+function checkCollision(player, object)
+	-- possible alternative collision checker for circles
+	-- local distance = math.sqrt((player.x - object.x)^2 + (player.y - object.y)^2)
+	-- local radiusSum = (player.width / 2) + (object.width / 2)
+	
+	-- if distance < radiusSum then
+	--     return true
+	-- else
+	--     return false
+	-- end
+
+    if player.x + player.width > object.x and
+       player.x < object.x + object.width and
+       player.y + player.height > object.y and
+       player.y < object.y + object.height then
         return true
     else
         return false
