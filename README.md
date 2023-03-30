@@ -6,6 +6,12 @@
 3. Moving Sprite - control a sprite on the screen with the d-pad.
 4. Player Follower - a simple game that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple `easeInEaseOut` algo.
 
+# Development flow
+
+Since LuaPlayer Euphoria v7 isn't setup for destop development I recommend downloading PPSSPP and running your project through emulation. PPSSPP is cross platform and even works on Android and iOS phones.
+
+Download: https://www.ppsspp.org/download/
+
 
 ## Customizing the eboot
 
