@@ -66,7 +66,7 @@ end
 
 function easeInOutFollow(currentX, currentY, targetX, targetY, time, duration)
 	-- Spacing between player and follower
-	local spacing = 10
+	local spacing = 20
 
     -- Calculate the time ratio
     local tRatio = time / duration
@@ -76,18 +76,34 @@ function easeInOutFollow(currentX, currentY, targetX, targetY, time, duration)
     -- if the last press button was up or down, move the follower on y properly
     if player.lastPosition == "up" or player.lastPosition == "down" then
     	if currentY < targetY then
-    		targetY = targetY - spacing
+    		if player.lastPosition == "up" then -- fixes pushing bug
+    			targetY = targetY + spacing
+    		else
+    			targetY = targetY - spacing
+    		end
     	elseif currentY > targetY then
-    		targetY = targetY + spacing
-    	end
+    		if player.lastPosition == "down" then -- fixes pushing bug
+    			targetY = targetY - spacing
+    		else
+    			targetY = targetY + spacing
+    		end
+       	end
     end
 
     -- if the last press button was left or right, move the follower on x properly
     if player.lastPosition == "left" or player.lastPosition == "right" then
     	if currentX < targetX then
-    		targetX = targetX - spacing
+    		if player.lastPosition == "left" then -- fixes pushing bug
+    			argetX = targetX + spacing
+    		else
+    			targetX = targetX - spacing
+    		end 
     	elseif currentX > targetX then
-    		targetX = targetX + spacing
+    		if player.lastPosition == "right" then -- fixes pushing bug
+	    		targetX = targetX - spacing
+	    	else
+	    		targetX = targetX + spacing
+	    	end
     	end
     end
 
@@ -127,9 +143,10 @@ while not Controls.readPeek():start() do
 	screen:blit(follower.x, follower.y, followerSprite)
 	screen:blit(player.x, player.y, playerSprite) -- player on top
 
-	local output = "player: " .. player.x .. " " .. player.y .. " | follower: " .. follower.x .. " " .. follower.y 
-	IntraFont.print(font, 20, 30, 0.3, IntraCol.white, IntraCol.black, output)
-
+	local playerOutput = "player: x" .. player.x .. " y" .. player.y
+	IntraFont.print(font, 20, 30, 0.3, IntraCol.white, IntraCol.black, playerOutput)
+	local followerOutput = "follower: x" .. follower.x .. " y" .. follower.y 
+	IntraFont.print(font, 20, 40, 0.3, IntraCol.white, IntraCol.black, followerOutput)
 
 	--Finish the GU and Sync	
 	System.endDraw();
