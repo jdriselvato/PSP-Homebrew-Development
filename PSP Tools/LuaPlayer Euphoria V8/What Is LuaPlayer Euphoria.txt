@@ -1,0 +1,57 @@
+-- LuaPlayer Euphoria V8 By Zack --
+-- If you find a bug with LuaPlayer Euphoria, Please submit to the official forums : http://www.retroemu.com/forum/forumdisplay.php?f=148 or on the google code page : http://code.google.com/p/luaplayereuphoria/
+-- Based on LuaPlayer v0.20 by Shine --
+-- Official forum : http://www.retroemu.com/forum/index.php?/forum/9-luaplayer-euphoria/
+
+-------------------- What is LuaPlayer Euphoria ? --------------
+
+LuaPlayer Euphoria is a branch of LuaPlayer that is optimised for speed, Whilst staying true to 
+the ease of use and function names we have all grown to love.
+
+-------------------- What can it do? What makes it different to the normal LuaPlayer ? -------------------
+
+It can display images up to 100% faster than 
+the default LuaPlayer, by automatically swizzling the images as there loaded. You can also unSwizzle images and move
+image to Vram for faster rendering.
+
+It also features IntraFont support, so you can now load and display fonts without the horrible slowdown that the built in one brings ;)
+Go to the tools folder and try out the ttf > pgf font converter :) 
+
+Normal ttf font support has being dropped, due to the slow speed. IntraFont with converted TTF's is the way to go.
+
+Another feature LuaPlayer Euphoria has is Automatic TV-OUT support for your Lua Scripts!, just go to Settings > Connected Display Settings on your PSP and set the output
+to your tv, then launch your lua game/app and wala! Your game/app is displayed on your tv in all it's glory!
+
+It also features Mp3, Ogg & At3 playback via the PSP Media Engine. 
+Whilst displaying a 480x272 image and playing a Mp3 file, LuaPlayer Euphoria can achieve 
+up to 220>250 FPS (Frames Per Second) running at only 222mhz!. (SEE SAMPLE DEMO FOR PROOF!)
+
+It also features CPU Speed control. Which can be done by the user. So you can set the PSP's CPU to either : 100, 222, 266 or 333mhz.
+
+A big feature is it's VFPU math library. Using the VFPU math functions can really speed up your game/app if you are using a lot
+of maths.
+
+Another feature, albeit trivial, is a built in FPS Function. By simply calling "showFPS()" you can see your game/applications 
+current FPS out of 60 frames. If you want to see its "True" FPS, comment out screen.waitVblankStart and change pad = Controls.Read() to pad = Controls.ReadPeek() (doesn't cap FPS)- as these
+cap the framerate to 60. 
+
++ A lot more to come!
+
+It is slim and phat compatible. Should work on 3.0>5.xx firmwares. Should also work
+on chickHen.
+
+------------------- Why use this over PGE or LuaPlayer HM ? ------------------------
+
+Well thats a good question. If you don't like the way PGE lua or LuaPlayer HM are set up (ie function names, calls)
+and prefer the old lua player in that sense (just not the performance), then LuaPlayer Euphoria is the answer
+you have been looking for.
+
+------------------- Are we going to see more in the future ? ---------------------------
+
+Provided there is genuine interest from a decent sized group of people then yes. I wont be doing this
+for the good of my health... lol.
+
+So yeah, if there are enough people using it, and enough people interested in the project I will keep working on it.
+I will also try my best to add any new features you desire.
+
+If you would like to request a feature be added, please do so at the official site : http://www.retroemu.com/forum/index.php?/forum/9-luaplayer-euphoria/
