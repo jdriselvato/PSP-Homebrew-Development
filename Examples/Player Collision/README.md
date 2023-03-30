@@ -1,10 +1,8 @@
-# Player Follower
+# Player Collision
 
-In this example we use a easeInOut follow algo in which a follower sprite follow the players sprite.
-
+This example looks at a very rough idea of what collision code could look like. Ideally it should be more dynamic and maybe I'll do a part two later.
 
 # DEMO
 
 
-https://user-images.githubusercontent.com/950825/228922932-8036da84-3677-4e87-a3e0-9f9e228fd1ad.mov
 
