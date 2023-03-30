@@ -5,6 +5,7 @@
 2. PSP Controls 2 - prints button pressed on the PSP dynamically.
 3. Moving Sprite - control a sprite on the screen with the d-pad.
 4. Player Follower - a simple game that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple `easeInEaseOut` algo.
+5. Player Collision - Crude way to detect sprite collision.
 
 # Development flow
 
