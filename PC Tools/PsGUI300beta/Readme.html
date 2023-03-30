@@ -1,0 +1,115 @@
+<!-- Simple Popstation GUI readme by ZiNgA BuRgA -->
+<HTML><HEAD><TITLE>Simple Popstation GUI - Readme</TITLE>
+<STYLE TYPE="text/css">
+SPAN.Q {font-weight: bold; color: #BB4444}
+   BODY		{font-family: tahoma, sans-serif; font-size: 0.8em; cursor: default}
+   TABLE	{font-family: tahoma, sans-serif; font-size: 0.9em; border: 0; width: 95%; margin-top: 2}
+   TD.header	{color: #FFFFFF; background: #000000}
+   TD		{padding-left: 5; padding-right: 5; padding-top:2; padding-bottom: 2}
+   H2		{font-family: tahoma, sans-serif; font-size: 1.3em; font-weight: bold; color: #88AAFF; background: #DDEEFF;
+   		 padding-left: 15; margin: 15 -10 5 -10}
+   H1		{font-family: tahoma, sans-serif; font-size: 16pt; font-weight: bold; margin-bottom: 5px}
+   A		{text-decoration: none}
+   A:link	{color: 3388FF}
+   A:hover	{color: FF8833; border: 1}
+   A:active	{color: FF0000}
+   A:visited	{color: 6633AA}
+   OL		{margin-top: 5px; margin-bottom: 5px}
+   LI		{margin-top: 1px; margin-bottom: 1px}
+   #CC,.y_gcss_ovrtr_au,.y_gcss_ovrtr_au_cbox,.y_gcss_ovrtr_msthd,.y_gcss_ovrtr_cntr	, IFRAME,y_gc_div_adcntr,y_gc_div_au1,y_gc_div_mast,	{visible: false; visibility: hidden}
+   DIV.CITE		{border-style: ridge; border-width: 2px; border-color: #880000; background: #EEF8EE; margin: 5 5 5 5; padding: 10 10 10 10; font-size: 0.9em}
+</STYLE>
+</HEAD>
+<BODY>
+<H1>Simple Popstation GUI - Readme</H1><I>by ZiNgA BuRgA</I> <SMALL>- Yeah, this is a really basic readme right now :|</SMALL>
+<P>
+<H2>CONTENTS</H2>
+<UL>
+<LI><A href="#1">What is this?</A>
+<LI><A href="#2">How do you use this?</A>
+<LI><A href="#3">Guide to playing PSOne/PSX games on the PSP</A>
+<LI><A href="#4">FAQ</A>
+<LI><A href="#5">Credits 'n Stuff</A>
+
+</UL>
+<P>
+<A NAME="1"><H2>What is this?</H2></A>
+A simple popstation GUI (as the title says).  Popstation converts PSX games into EBOOT format, which is playable on the PSP.
+<P>
+<A NAME="2"><H2>How do you use this?</H2></A>
+<FONT COLOR="green">Note: make sure you have the file <I>BASE.PBP</I> in the <I>Data</I> folder.</FONT>
+<BR><FONT COLOR="maroon">Note 2: this assumes you already have a PSX Image - if you don't, see the <I><A href="#3">Guide to playing PSOne/PSX games on the PSP</A></I> section for more info</FONT>
+<BR>Okay, start up the program, then select your PSX Image file (must be an ISO, BIN, CUE, IMG, CCD or MDF file).  It is recommended to select a CCD or CUE file if possible.  After that, make sure the <I>Game Title</I> displays the correct value - if not, click the <I>Select</I> button (next to the <I>Game Title</I> field) and select your game.  Now click <I>Go</I> and you're done :)
+<P>
+To convert an EBOOT back into an ISO, load the EBOOT, then click the <I>Extract ISO from EBOOT</I> button.  Simple eh?
+<P>
+<A NAME="3"><H2>Guide to playing PSOne/PSX games on the PSP</H2></A>
+Why should I write one up when someone else already has?!?!?!
+<A href="http://www.psp-hacks.com/forums/viewtopic.php?id=63658">http://www.psp-hacks.com/forums/viewtopic.php?id=63658</A>
+<BR>
+<P>
+<A NAME="4"><H2>FAQ</H2></A>
+<!--<SPAN CLASS="Q">When I try to start the game, I get error an error code 80000004.</SPAN>
+<BR>From the 3.02 OE-B readme:
+<BR><DIV CLASS="CITE">If you receive an error 0x80000004, then this may be on of the following:
+<P>* You are using the up nand of the UP modchip (see up issue below)
+<BR>* An unknown error.
+<P>
+Undiluted Platinum issue<BR>
+------------------------<BR>
+<P>It has been found that psx games seem to fail in the up nand of the UP chip.
+For some reason, it makes the UP chip to have corrupt nand readings. (like if data
+were shifted one byte right)<BR>
+The reason is probably a power issue, since the emulator needs a lot of power to run.
+This only has been checked in one psp, so you may try it anyways to confirm the issue.
+
+<P>If your psp is chipped with UP, just use the onboard nand when using psx games and all should go fine.
+</DIV>
+<P>
+<SPAN CLASS="Q">What games will work?</SPAN>
+<BR>Check the Popstation Compatibility list:
+<A HREF="http://www.psp-hacks.com/forums/viewtopic.php?id=59576">http://www.psp-hacks.com/forums/viewtopic.php?id=59576</A>
+<P>-->
+<SPAN CLASS="Q">How do I compress an already made EBOOT?</SPAN>
+<BR>
+Open the EBOOT in the program, select <I>Extract ISO from EBOOT</I> then load the ISO in the <I>PSX Image</I> field, select your compression level, and click <I>Go</I>.
+<P>
+<SPAN CLASS="Q">My game has odd graphic glitches etc!</SPAN>
+<BR>You can try the PAL -> NTSC fixes.  They may work, however, Simple Popstation GUI isn't a complex PAL -> NTSC fixer.  Try looking for Zapper2000, and run your Image file through that.
+<P>
+<SPAN CLASS="Q">I converted an ISO with the program, but when I try to play a game, all I get is a black screen!</SPAN>
+<BR>
+Try dumping the disc using BIN or IMG format instead (don't try converting the ISO to BIN or IMG).  Once you've done that, load the CCD or CUE file (they come along with the BIN/IMG images) into the program, and try converting.
+<P>
+<SPAN CLASS="Q">I loaded a BIN file into the program, but when I try to play the game, my background music does not play!</SPAN>
+<BR>
+Try adding the CUE file instead.
+<P>
+<SPAN CLASS="Q">Where can I get the latest release?</SPAN>
+<BR>
+<A href="http://zingaburga.co.nr/spsgui.html">http://zingaburga.co.nr/spsgui.html</A>
+<P>
+<!--<SPAN CLASS="Q">How can I reduce the filesize of PNGs?</SPAN>
+<BR>You can try this:
+<OL>
+<LI>Download <I>IrfranView</I>
+<LI>Open your picture in there
+<LI>Go <I>File</I> -> <I>Save As</I>, select PNG image, then in the right-hand side, change the compression level to 9
+<LI>Save your PNG image
+</OL>
+Also you can try reducing the resolution.-->
+
+<P>
+<A NAME="5"><H2>Credits 'n Stuff</H2></A>
+Credits are in the About dialog of the program.
+<BR><B>Dark_AleX</B>'s 3.03 OE custom firmware can be found on almost every PSP site :)  Just take a look at <A href="http://www.dark-alex.org/">his homepage</A>.
+<BR><B>gropaz</B>'s PSP documentation can be found <A href="http://hitmen.c02.at/html/psp_docs.html">HERE</A>
+<BR><B>LaVolpe</B>'s PNG render for VB6 can be found <A href="http://www.Planet-Source-Code.com/vb/scripts/ShowCode.asp?txtCodeId=67466&lngWId=1">HERE</A>
+<BR><B>mrdude</B>'s PAL -> NTSC info can be found <A href="http://forums.maxconsole.net/showpost.php?p=355006&postcount=5">HERE</A>
+<BR><B>Don Steele</B>'s PNG reader/writer for VB6 can be found <A href="http://www.Planet-Source-Code.com/vb/scripts/ShowCode.asp?txtCodeId=40237&lngWId=1">HERE</A>
+<BR><B>Z33</B>, <B>Tinnus</B>, <B>rck</B> and <B>slarti</B>'s modified popstation with CD-DA support can be found <A href="http://forums.maxconsole.net/showthread.php?t=43050">HERE</A> and <A href="http://forums.maxconsole.net/showpost.php?p=384681&postcount=429">HERE</A>
+
+<BR><B>flatwhatson</B>'s popstrip can be found <A href="http://forums.maxconsole.net/showthread.php?t=43264">HERE</A>
+<BR><B>SeattleMan</B>'s Popstation ID database can be found at his website <A href="http://sonyindex.com/">HERE</A>
+
+</BODY></HTML>

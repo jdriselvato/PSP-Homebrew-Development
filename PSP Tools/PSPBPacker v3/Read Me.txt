@@ -1,0 +1,50 @@
+Hello everyone,
+welcome to PSPBPacker.
+
+This is a lua based app that edits eboots for the PSP and PSP Go.
+
+This is a useful tool to use if you do not like something about any
+of your eboots.
+
+You can add, change or remove anything from the eboot which includes
+the following:
+
+Title -Change only
+Parental level - Add and change and remove
+App Version - Add and change and remove
+ICON0.PNG -Add, change and remove
+ICON1.PMF -Add, change and remove
+PIC0.PNG -Add, change and remove
+PIC1.PNG -Add, change and remove
+SND0.AT3 -Add, change and remove
+DATA.PSP -Add, change and remove
+DATA.PSAR -Add, change and remove
+MEMSIZE -Add and remove
+
+MEMSIZE will unlock extra RAM for the PSP slim only.
+
+It is NOT recommended to add, change, or remove the DATA.PSP
+or DATA.PSAR, unless you know what you're doing.
+You can backup, restore and unpack the eboot in the Eboot Menu.
+
+To restore an eboot that you have backed up, go to the eboot that you
+have edited and press X to go into the Eboot Menu, then Press X on the
+"Restore eboot" option.
+
+You can open up eboots in the browser as if they're folders to view the
+contents inside. You can also select the files inside the eboot to copy
+from one eboot to another, you can even copy files from the eboot you
+are editing.
+For example,
+press X on the PIC1.PNG option in the eboot menu, then open up the
+eboot in the browser by pressing X, then select _PIC0.PNG or _ICON0.PNG.
+Then save changes.
+
+Installation:
+Copy the "PSPBPacker" folder into the "/PSP/GAME" folder or the
+"/PSP/GAMExxx" folder corresponding to the CFW that you are on.
+Once you have done that it is ready to run.
+
+Enjoy.
+
+qwikrazor87

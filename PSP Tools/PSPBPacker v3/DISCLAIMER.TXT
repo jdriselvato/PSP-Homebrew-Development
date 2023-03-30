@@ -1,0 +1,18 @@
+IN NO EVENT SHALL I BE LIABLE FOR ANY CLAIM,
+DAMAGES OR OTHER LIABILITY, INCLUDING ANY
+GENERAL, SPECIAL, INDIRECT, INCIDENTAL,
+OR CONSEQUENTIAL DAMAGES, WHETHER IN AN
+ACTION OF CONTRACT, TORT OR OTHERWISE,
+ARISING FROM, OUT OF THE USE OR INABILITY
+TO USE THE LUA SOFTWARE OR FROM
+OTHER DEALINGS IN THE LUA SOFTWARE.
+
+My code format is not perfect
+and I do not comment my code,
+so have fun deciphering it
+if you decide to use it.
+
+If you need to you can contact me at
+http://forums.qj.net/qwikrazor87s-lua/
+or send a PM to qwikrazor87 at
+http://wololo.net/talk/

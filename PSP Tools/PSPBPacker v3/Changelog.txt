@@ -1,0 +1,19 @@
+PSPBPacker by qwikrazor87
+
+Changelog history
+--------------------------------------------------
+v3: June 24, 2012
+*Now uses PGE Lua interpreter
+*Recoded from scratch
+*Fixed eboot issue from previous version
+*You can now unlock extra RAM for an eboot (slim PSP only)
+*You can now view PARAM.SFO info
+*Customizable GUI
+--------------------------------------------------
+v2: May 13, 2012
+*You can now add/edit the app version for eboot
+*Changed GUI
+*Fixed some bugs
+--------------------------------------------------
+v1: March 25, 2012
+* Initial release
