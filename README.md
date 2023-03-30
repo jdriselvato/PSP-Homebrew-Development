@@ -3,7 +3,8 @@
 
 1. PSP Controls 1 - prints button pressed on the PSP.
 2. PSP Controls 2 - prints button pressed on the PSP dynamically.
-2. Sprite follow - a simple app that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple algo.
+3. Moving Sprite - control a sprite on the screen with the d-pad.
+4. Player Follower - a simple game that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple `easeInEaseOut` algo.
 
 
 ## Customizing the eboot

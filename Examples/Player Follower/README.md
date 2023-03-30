@@ -1,4 +1,4 @@
-# Sprite Following
+# Player Follower
 
 In this example we use a easeInOut follow algo in which a follower sprite follow the players sprite.
 
