@@ -1,3 +1,4 @@
+# LuaPlayer Homebrew Development
 
 ## Examples
 
@@ -8,14 +9,14 @@
 5. Player Collision - crude way to detect sprite collision.
 6. Tile Map Engine - a very basic tile map engine importing from .csv
 
-# Development flow
+## Development flow
 
 Since LuaPlayer Euphoria v7 isn't setup for destop development I recommend downloading PPSSPP and running your project through emulation. PPSSPP is cross platform and even works on Android and iOS phones.
 
 Download: https://www.ppsspp.org/download/
 
 
-## Customizing the eboot
+# Customizing the eboot
 
 While initially testing LuaPlayer Euphoria v7 on PPSSPP, I became annoyed at the fact that every eboot has the same icon and the PPSSPP display doesn't make it obvious which icon is the one I'm working with.
 
