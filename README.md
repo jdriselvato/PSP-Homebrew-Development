@@ -28,6 +28,11 @@ In my case, I'm going to use PSPBPacker on my physical PSP to edit the icon.
 
 If you have windows, I recommend [POPstation GUI](https://wololo.net/downloads/index.php/download/8163).
 
+
+# Other projects to checkout
+
+- [The Labyrinth](https://github.com/Yonaba/the-labyrinth/tree/4f44523ee48362b537ca74e413f6a5cda7c41f6a) - A minimalistic raycasting engine technical demonstration
+
 -----
 
 #### Thought log
