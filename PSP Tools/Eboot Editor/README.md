@@ -28,6 +28,12 @@ Outputs to ``./output`.
 
 Note: PPSSPP needs to be rebooted to see new icon as it seems it caches icons on discovery.
 
-### icon0
+## icon0
 
 Size: 144 x 80 pixels
+
+# Screenshot
+
+<img width="322" alt="patched" src="https://user-images.githubusercontent.com/950825/229311749-7cf9a713-2b9d-4b40-b5ea-d0edf962a002.png">
+
+LuaPlayer Euphoria V7 Patched with new name and icon0 on PPSSPP
