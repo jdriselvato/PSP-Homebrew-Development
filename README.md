@@ -28,4 +28,11 @@ In my case, I'm going to use PSPBPacker on my physical PSP to edit the icon.
 
 If you have windows, I recommend [POPstation GUI](https://wololo.net/downloads/index.php/download/8163).
 
+-----
+
+#### Thought log
+
+**03/31/2023:**
+
+I went two days writing Lua without the language installed on my Mac. `brew install lua` but then I soon learned that Lua has it's own package manager via `brew install luarocks`. For some reason Lua seems like such an old language since it was one of the first I learned as a teenager. `luarocks` makes me happy, good to know there's folks out there push Lua as a modern language.
 
