@@ -24,7 +24,7 @@ Changing Eboot name to: Tile Map Engine 1
 Stating editBoot	EBOOT.PBP	./output/	Tile Map Engine 1	icon0.png	icon0.png
 ```
 
-Outputs to ``./output`.
+Outputs to `./output`.
 
 Note: PPSSPP needs to be rebooted to see new icon as it seems it caches icons on discovery.
 
