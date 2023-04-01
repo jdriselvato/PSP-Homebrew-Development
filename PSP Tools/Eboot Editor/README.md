@@ -1,9 +1,13 @@
 # Eboot Editor
 
+While initially testing LuaPlayer Euphoria v7 on PPSSPP, I became annoyed at the fact that every eboot has the same icon and the PPSSPP display doesn't make it obvious which icon is the one I'm working with.
+
 Using a modified version of LuaPBPLib this command-line editor can:
 
 - Edit EBOOT display name
 - Edit icon0
+
+This should work on any OS (Windows, MacOS, Linux) that has [Lua](https://www.lua.org) installed.
 
 #### Example:
 
@@ -37,3 +41,7 @@ Size: 144 x 80 pixels
 <img width="322" alt="patched" src="https://user-images.githubusercontent.com/950825/229311749-7cf9a713-2b9d-4b40-b5ea-d0edf962a002.png">
 
 LuaPlayer Euphoria V7 Patched with new name and icon0 on PPSSPP
+
+# Other
+
+If you have windows, try [POPstation GUI](https://wololo.net/downloads/index.php/download/8163) instead.
