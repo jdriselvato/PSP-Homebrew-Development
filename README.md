@@ -7,7 +7,8 @@
 3. Moving Sprite - control a sprite on the screen with the d-pad.
 4. Player Follower - a simple game that shows drawing two spites. One sprite is controlled by the player, the second sprite follows the player with a simple `easeInEaseOut` algo.
 5. Player Collision - crude way to detect sprite collision.
-6. Tile Map Engine - a very basic tile map engine importing from .csv
+6. Tile Map Engine - a very basic tile map engine importing from `.csv`
+7. Orbiting NPC - a basic node orbiting another node example
 
 ## Development flow
 
