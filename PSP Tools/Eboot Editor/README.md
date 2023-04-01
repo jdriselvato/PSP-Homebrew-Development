@@ -2,8 +2,8 @@
 
 Using a modified version of LuaPBPLib this command-line editor can:
 
-- Edit icon0
 - Edit EBOOT display name
+- Edit icon0
 
 #### Example:
 
