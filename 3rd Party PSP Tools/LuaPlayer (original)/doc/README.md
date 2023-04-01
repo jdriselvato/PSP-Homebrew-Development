@@ -2,7 +2,7 @@
 
 The actual docs have gone offline years ago. Here's a copy from an [archive.org](http://web.archive.org/web/20071001121243/http://wiki.ps2dev.org/psp:lua_player:functions) but converted into markdown - jdriselvato
 
-#Graphics
+# Graphics
 
 `Font Font.load(filename)`
 
