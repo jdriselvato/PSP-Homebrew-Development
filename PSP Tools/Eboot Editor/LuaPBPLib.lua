@@ -164,37 +164,36 @@ function editEboot(path,dest,newName,newIcon0,newPic1)
     data.offset[3] = data.offset[2]
   end
 
-  -- -- Icon1_Unknow
-  -- eboot:seek("set",offset[3])
-  -- data.icon1_unknown = eboot:read(offset[5] - offset[3])
-  -- data.offset[4] = data.offset[3] + offset[4] - offset[3]
-  -- data.offset[5] = data.offset[4] + offset[5] - offset[4]
-  -- print(data.icon1_unknown, data.offset[4], data.offset[5])
+  -- Icon1_Unknow
+  eboot:seek("set",offset[3])
+  data.icon1_unknown = eboot:read(offset[5] - offset[3])
+  data.offset[4] = data.offset[3] + offset[4] - offset[3]
+  data.offset[5] = data.offset[4] + offset[5] - offset[4]
 
-  -- -- Pic1
-  -- eboot:seek("set",offset[5])
-  -- if newPic1 ~= nil and newPic1 ~= "" and newPic1 ~= "Pic1" then
-  --   local image = io.open(newPic1,"rb")
-  --   if not image then
-  --     return "Impossible d'ouvrir le pic1"
-  --   end
-  --   data.pic1 = image:read("*a")
-  --   data.offset[6] = data.offset[5] + image:seek("end")
-  --   image:close()
-  -- elseif newPic1 == "Pic1" then
-  --   data.pic1 = eboot:read(offset[6] - offset[5])
-  --   data.offset[6] = data.offset[5] + offset[6] - offset[5]
-  -- elseif newPic1 == "" then
-  --   data.pic1 = ""
-  --   data.offset[6] = data.offset[5]
-  -- end
+  -- Pic1
+  eboot:seek("set",offset[5])
+  if newPic1 ~= nil and newPic1 ~= "" and newPic1 ~= "Pic1" then
+    local image = io.open(newPic1,"rb")
+    if not image then
+      return "Impossible d'ouvrir le pic1"
+    end
+    data.pic1 = image:read("*a")
+    data.offset[6] = data.offset[5] + image:seek("end")
+    image:close()
+  elseif newPic1 == "Pic1" then
+    data.pic1 = eboot:read(offset[6] - offset[5])
+    data.offset[6] = data.offset[5] + offset[6] - offset[5]
+  elseif newPic1 == "" then
+    data.pic1 = ""
+    data.offset[6] = data.offset[5]
+  end
 
-  -- -- Snd0_PSP_Psar
-  -- eboot:seek("set",offset[6])
-  -- data.snd0_psp_psar = eboot:read("*a")
-  -- data.offset[7] = data.offset[6] + offset[7] - offset[6]
-  -- data.offset[8] = data.offset[7] + offset[8] - offset[7]
-  -- eboot:close()
+  -- Snd0_PSP_Psar
+  eboot:seek("set",offset[6])
+  data.snd0_psp_psar = eboot:read("*a")
+  data.offset[7] = data.offset[6] + offset[7] - offset[6]
+  data.offset[8] = data.offset[7] + offset[8] - offset[7]
+  eboot:close()
 
   -- Output
   local output = io.open(dest.."EBOOT.pbp","wb")
@@ -207,8 +206,8 @@ function editEboot(path,dest,newName,newIcon0,newPic1)
   end
   output:write(data.param)
   output:write(data.icon0)
-  -- output:write(data.icon1_unknown)
-  -- output:write(data.pic1)
-  -- output:write(data.snd0_psp_psar)
+  output:write(data.icon1_unknown)
+  output:write(data.pic1)
+  output:write(data.snd0_psp_psar)
   output:close()
 end
