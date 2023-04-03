@@ -1,4 +1,9 @@
 
+local psp = {
+	width = 480,
+	height = 272
+}
+
 -- Algo for the wave
 function updateWave(delta, nodeCount)
 	local yValues = {}
@@ -23,17 +28,18 @@ function start()
 		local currentTime = os.clock()
 
 		-- animate "wave"
-		local nodeCount = 15
-		local nodeWidth = 480/nodeCount
-		local nodeHeight = 272
+		local nodeCount = 10
+		local nodeWidth = psp.width/nodeCount
 		for i, y in ipairs(updateWave(currentTime, nodeCount)) do
+			local nodeX = (nodeWidth*i)-nodeWidth -- x
+			local nodeY = (psp.height/2) + y -- y (center animation to the middle of PSP screen)
 			screen:fillRect(
-				(nodeWidth*i)-nodeWidth, -- x
-				(nodeHeight/2) + y, -- y
+				nodeX, nodeY,  -- x & y
 				nodeWidth,  -- width
-				nodeHeight, -- height
+				(psp.height/2) - y, -- height (pin to the bottom of the screen)
 				Color.new(0, 200, 250) -- color
 			)
+
 		end
 
 		System.endDraw();
