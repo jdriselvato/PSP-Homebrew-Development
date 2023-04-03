@@ -11,6 +11,7 @@ Below are common game development examples I wrote to help jump start anyone int
 5. Player Collision - crude way to detect sprite collision.
 6. Tile Map Engine - a very basic tile map engine importing from `.csv`
 7. Orbiting NPC - a basic node orbiting another node example
+8. Water Sim - simulating water via a sin wave
 
 ## Development flow
 
