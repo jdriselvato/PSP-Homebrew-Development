@@ -18,6 +18,23 @@ Since LuaPlayer Euphoria v7 isn't setup for destop development I recommend downl
 
 Download: https://www.ppsspp.org/download/
 
+Some of the primitive drawing functions (`screen:print`, `screen:drawLine`, `image:pixel`, etc) don't work on PPSSPP without a few graphics setting changes, here's a working setup in PPSSPP settings:
+
+```
+Graphics:
+	backend = OpenGL
+	Software render (slow,accurate) = on
+	VSync = on
+	Frame Skipping = off
+	Auto frameskip = off
+	Alternative speed = Unlimited
+	Alternative speed 2 = off
+	Spline/Bezier curves quality = High
+	Buffer graphics command = Up to 2
+```
+
+
+
 
 # Other projects to checkout
 
@@ -26,6 +43,14 @@ Download: https://www.ppsspp.org/download/
 -----
 
 #### Thought log
+
+
+**04/02/2023**
+
+It seems that the current version (1.14.3-28) of PPSSPP doesn't handle LuaPlayer drawing correctly. I thought that `screen:print`, `screen:drawLine`, and `image:pixel` were broken in Euphoria V7 until I ran my scripts on an actual device. I'll have to research a better emulator for PSP testing because I have some ideas that require the more primitive functions. Plus, debugging with `screen:print` is so much easier than importing the entire Font like Euphoria recommends.
+
+UPDATE: see `Development flow` above on how I fixed this.
+
 
 **03/31/2023:**
 
