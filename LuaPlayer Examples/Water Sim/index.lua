@@ -14,15 +14,6 @@ function updateWave(delta, nodeCount)
 	return yValues
 end
 
-function randomColor()
-	local r = math.random(0, 225)
-	local g = math.random(0, 225)
-	local b = math.random(0, 255)
-	return Color.new(r, g, b)
-end
-
-local color = randomColor()
-
 function start()
 	while not Controls.readPeek():start() do
 		System.draw()
@@ -32,7 +23,7 @@ function start()
 		local currentTime = os.clock()
 
 		-- animate "wave"
-		local nodeCount = 10
+		local nodeCount = 15
 		local nodeWidth = 480/nodeCount
 		local nodeHeight = 272
 		for i, y in ipairs(updateWave(currentTime, nodeCount)) do
@@ -41,7 +32,7 @@ function start()
 				(nodeHeight/2) + y, -- y
 				nodeWidth,  -- width
 				nodeHeight, -- height
-				color -- color
+				Color.new(0, 200, 250) -- color
 			)
 		end
 
