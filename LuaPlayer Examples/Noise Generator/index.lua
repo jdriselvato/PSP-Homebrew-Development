@@ -3,6 +3,11 @@ require("lib/load_map")
 --//## Set CPU speed
 System.setCpuSpeed(333)
 
+block_size = {
+	width = 8,
+	height = 8
+}
+
 -- Function to load the map from a CSV file
 
 local map = loadMap("./maps/map.csv")
@@ -20,7 +25,7 @@ function displayMap()
 				block_size.width,  -- width
 				block_size.height, -- height
 				Color.new( -- easy gray scale
-					tileValue * (255/10), -- 10 cause the converted values are between 1 and 10
+					tileValue * (255/10), -- 10 cause the converted values are between 1 and 1
 					tileValue * (255/10),
 					tileValue * (255/10)
 				)
