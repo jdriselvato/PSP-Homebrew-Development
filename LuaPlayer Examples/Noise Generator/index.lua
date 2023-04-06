@@ -1,21 +1,14 @@
 require("lib/load_map")
+require("lib/generate_map")
 
 --//## Set CPU speed
 System.setCpuSpeed(333)
 
 --// Helpers
 
-local numberColor = {
-  [1] = Color.new(10,203,20),
-  [2] = Color.new(50,23,20),
-  [3] = Color.new(20,43,20),
-  [4] = Color.new(25,43,20),
-  [5] = Color.new(50,3,20),
-  [6] = Color.new(94,100,20),
-  [7] = Color.new(49,130,20),
-  [8] = Color.new(43,1,20),
-  [9] = Color.new(88,2,50),
-  [10] = Color.new(40,40,20),
+local psp = {
+	width = 480,
+	height = 272
 }
 
 local block_size = {
@@ -24,6 +17,7 @@ local block_size = {
 }
 
 -- Function to load the map from a CSV file
+
 local map = loadMap("./maps/map.csv")
 
 function displayMap()
@@ -50,6 +44,7 @@ end
 
 --//## MAIN ##\\ --
 
+local needsMapUpdate = false
 while not Controls.readPeek():start() do
 	--Initialize the GU (Note : Any graphical functions MUST be placed AFTER this)
 	System.draw()
