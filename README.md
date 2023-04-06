@@ -12,6 +12,7 @@ Below are common game development examples I wrote to help jump start anyone int
 6. Tile Map Engine - a very basic tile map engine importing from `.csv`
 7. Orbiting NPC - a basic node orbiting another node example
 8. Water Sim - simulating water via a sin wave
+9. Perlin Noise Generator - map generating via perlin noise. Also, includes a port of 2D Perlin Noise to Lua.
 
 ## Development flow
 
