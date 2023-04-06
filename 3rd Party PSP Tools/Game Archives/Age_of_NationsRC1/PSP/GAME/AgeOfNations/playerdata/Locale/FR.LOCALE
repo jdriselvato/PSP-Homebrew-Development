@@ -1,0 +1,23 @@
+--[[	AoN
+		Frensh Dialog File
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 18/08/2010
+	]]
+
+	
+dialog = {}
+dialog['pause'] = 'Pause - Appuyez O pour Continuer...'
+dialog['quit'] = 'Quitter ?'
+dialog.mainmenu = {"Campagne","Options","Credits","Quitter"}
+dialog.lang = {'Langue : '}
+dialog.exit =' Voulez vous quitter ? '
+dialog[1] = 'En premier lieu, vous vous familiariserez avec le curseur.C\'est l\'item que vous emploierez le plus.\nVous pouvez le bouger avec les fleches directionnelles.\n Allez-y, et bougez le dans tous les sens.'
+dialog[2] = 'Il est egalement possible de deplacer le curseur avec l\'analogique.Vous pouvez essayer.'
+dialog[3] = 'Vous allez maintenant apprendre a naviguer sur la carte.\nCela se fait en maintenant enfoncee la touche Carre, et en appuyant sur les touches directionnelles.\nA vous d\'essayer! Allez dans toutes les directions.'
+dialog[4] = 'La mini-carte est un outil tres pratique pour visualiser l\'ensemble du terrain, et deplacer instantanement votre point de focus sur la carte.\nVous pouvez l\'afficher et la desafficher avec la touche R.\nAffichez la mini-carte, essayez de teleporter votre point de vue en cliquant dessus.Quand vous aurez termine, desaffichez-la.'
+dialog[5] = 'Vous allez maintenant diriger des unites.\nDans un premier temps, selectionnez l\'unite (en cliquant dessus avec le bouton Croix), puis deplacez la vers une destination definie avec le meme bouton.\nLe deplacement des unites est gere par un algorithme leur permettant d\'eviter intelligemment les obstacles statiques.\nEnvoyez l\unite au coin inferieur droit de la carte.'
+dialog[6] = 'Les unites de type \'Paysan\' peuvent recolter 4 types de ressources naturelles : \n * La Nourriture \n * Le Bois \n * Les Pierres \n * L\' Or \n Ces ressources vous permettront de construire, reparer des batiments, et creer certains types d\'unites.\nRecolter des ressources est simple: selectionnez un paysan, et cliquez ensuite sur le type de ressource a exploiter avec le bouton Croix.\n Recoltez 100 de chaque type de ressource pour continuer.'
+dialog[7] = 'Les unites de type \'Paysan\' peuvent construire des batiments.\nSelectionnez une de ces unites, et sur la barre d\'outils s\'affichant alors, cliquez avec Croix sur le type de Batiment a construire si vous avez assez de ressources pour cela.Votre curseur change aussitot.Cliquez alors sur la carte a l\'emplacement desire pour implanter le chantier et commencer la construction.\nContruisez une Maison et un Centre-Ville pour Continuer.'
+dialog[8] = 'Bravo!\n Vous connaissez les commandes essentielles.A present, vous avez pleine liberte pour prendre en main les autres fonctionnalites.'
+

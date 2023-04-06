@@ -1,0 +1,85 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Age Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 25/07/2010
+	]]
+
+--Metatable 
+Age = {}
+Age.InstallUpdate = {}
+	Age.InstallUpdate[2] = function(icon)
+		if icon then
+		icon[3].isVisible = true --Build Barrack
+		icon[11].isVisible = true --Create Soldier
+		icon[12].isVisible = true --Create Bowman
+		icon[16].isVisible = false --Deactivate Update to Age 2
+		icon[17].isVisible = true --Update to Age 3					
+		end
+	end	
+	Age.InstallUpdate[3] = function(icon)
+		if icon then
+		icon[4].isVisible = true --Build Stable
+		icon[5].isVisible = true --Build Tower
+		icon[6].isVisible = true --Build Temple
+		icon[9].isVisible = true --Create Horseman
+		--icon[10].isVisible = true --Update Horseman
+		--icon[13].isVisible = true --Update Soldier
+		--icon[14].isVisible = true --Update Bowman
+		icon[15].isVisible = true --Create Priest 
+		icon[17].isVisible = false --Deactivate Update to Age 3
+		end
+	end
+	
+
+--Class Constructor
+function Age:new()
+	local age = { name = 1,timer = 0,progress = false }
+	setmetatable(age,self)
+	self.__index = self
+	return age
+end
+
+-------------------
+--Metamethods
+-------------------
+
+--Tests if the current age may evolve to the next one according to the player's resources.
+function Age:mayEvolve(playerRes)
+local toReach = self.name+1
+local setOfResources = {"Food","Wood","Stone","Gold"}
+	for _,k in ipairs(setOfResources) do
+		if playerRes[k] < AGES_COST[toReach][k] then return false end
+	end
+return true
+end
+
+--Prints the progress percentage of age upgrade
+function Age:drawProgress(boolean)
+	if self.progress then
+	self.timer = self.timer + AGE_UPDATE_PROGRESS
+		if self.timer > 100 then
+		self.timer = 0
+		self:Evolve(playerRes)
+		self:ApplyUpdates(icon)
+		self.progress = false
+			if build and build[playerRes.townCenterIndex] then build[playerRes.townCenterIndex].state = nil end
+		end
+	print(320,6,"Age Update : "..math.ceil(self.timer).." %")
+	end	
+end
+
+--Evolves the current age to the next one
+function Age:Evolve(playerRes)
+local toReach = self.name+1
+local setOfResources = {"Food","Wood","Stone","Gold"}
+	for _,k in ipairs(setOfResources) do
+	playerRes[k] = playerRes[k] - AGES_COST[toReach][k]
+	end
+	self.name = toReach
+end
+
+--enables the updates of the current age
+function Age:ApplyUpdates(icon)
+	self.InstallUpdate[self.name](icon)
+end

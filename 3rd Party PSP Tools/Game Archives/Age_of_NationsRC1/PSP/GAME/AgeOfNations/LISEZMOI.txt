@@ -1,0 +1,66 @@
+Qu'est ce que c'est ?
+-------------
+Age Of Nations est un jeu de statégie (RTS) basique, entièrement codé en LUA. C'est pour le moment un projet en cours de développement.
+
+Pour les développeurs
+-------------
+Le code source est libre d'utilisation. Vous pouvez le consulter en utilisant n'importe quel éditeur de texte.
+Le code source est orienté objet, ce qui convient le mieux pour un jeu de ce genre.
+
+Termes d'utilisation
+-------------
+Ce programme a été testé avant publication.
+Cependant, il n'est pas exempt de bugs.Employez le à vos propres risques.
+Si vous notez des bugs récurrents, merci de m'en faire part (voir en bas pour l'e-mail).
+
+
+Ressources Matérielles
+-------------
+Vous aurez besoin d'une PSP en custom firmware pour lancer cet Homebrew.
+ce programma a été testé avec succès sur PSP Fat et Slim (en custom Firmware 5.00 M33-4)
+Devrait être compatible avec tout Custom Firmware M33 et GEN.
+
+Installation
+-------------
+Extraire l'archive à la racine de votre Carte Mémoire.
+
+
+Commandes
+-------------
+    Commandes de Menu:
+    --------------
+    Haut/Bas (or Gauche/Droite): pour mettre en surbrillance une option
+    Croix: Valider l'option courante
+    Cercle: Confirmer et retourner.
+
+    Commandes en Cours de jeu:
+    --------------
+    Select: Quitter
+    Start: Pause
+    Rond: Quitter l'écran Pause
+
+
+Remerciements
+----------------
+Homemister pour son LuaPlayerHM
+Fabrice Y. pour le beta test)
+Philippe S. (pour son aide matérielle)
+Pleaser pour l'Eboot Artwork
+Seb,Geecko (sur les forums Devsgen)
+Shaolan, Sabbator (sur les forums XtreamLUA)
+
+
+Copie
+--------------
+Ce programme est un freeware.
+Il doit donc être distribué sans aucune rétribution.
+N'en faites pas d'usage commercial.
+
+Contact
+--------------
+Vous êtes prié de me faire part de vos commentaires, appréciations, conseils, ou notifications de bugs à l'adresse suivante:
+e-mail: seanpaul223[at]gmail[dot]com
+
+website
+--------------
+www.roland.xtreemhost.com

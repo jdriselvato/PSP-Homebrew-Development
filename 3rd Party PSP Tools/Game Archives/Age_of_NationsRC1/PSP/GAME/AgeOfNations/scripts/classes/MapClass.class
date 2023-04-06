@@ -1,0 +1,153 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Map Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 25/07/2010
+	]]
+
+--Sets Metatables	
+Map = {}
+Collide = {}
+Minimap = {}
+
+--Global variable for field of vision coordinates
+mapX,mapY = 0,0
+
+----------------
+--Metamethods
+----------------
+
+--Class constructor : Collide
+function Collide:new(width,height)
+	local collide = {}
+	for y = 1,math.floor(height/GRID_HEIGHT) do collide[y] = {}
+		for x = 1,math.floor(width/GRID_WIDTH) do collide[y][x] = 0 end
+	end
+	setmetatable(collide,self)
+	self.__index = self
+	return collide
+end
+
+--Class constructor : Minimap
+function Minimap:new()
+	local mmap = {w = MINIMAP_WIDTH, h = MINIMAP_HEIGHT,isVisible =false}
+	mmap.x = SCREEN_WIDTH-mmap.w
+	mmap.y = playerRes.TopBoard:height()
+	setmetatable(mmap,self)
+	self.__index = self
+	return mmap
+end
+
+
+--Class constructor: Map
+function Map:new(width,height)
+	local map = {}
+	for y = 1,math.floor(height/SCREEN_HEIGHT) do map[y] = {}
+		for x = 1,math.floor(width/SCREEN_WIDTH) do map[y][x] = 1 end
+	end
+	setmetatable(map,self)
+	self.__index = self	
+	return map
+end
+
+--Resets field of view coordinates
+function Map:resetCam()
+	mapX = (mapX > WORLD_SIZE_X-SCREEN_WIDTH) and WORLD_SIZE_X-SCREEN_WIDTH or mapX
+	mapY = (mapY > WORLD_SIZE_Y-SCREEN_HEIGHT) and WORLD_SIZE_Y-SCREEN_HEIGHT or mapY
+	mapX = (mapX < 0) and 0 or mapX
+	mapY = (mapY < 0) and 0 or mapY
+end
+
+
+--Sets a minimap object visible/unvisible
+function Minimap:setVisible(boolean)
+	self.isVisible = boolean
+end
+
+--draws minimap bounds
+function Minimap:drawCam()	
+	local camX = self.x+math.ceil((mapX/WORLD_SIZE_X)*MINIMAP_WIDTH)
+	local camXw = self.x+math.ceil(((mapX+SCREEN_WIDTH)/WORLD_SIZE_X)*MINIMAP_WIDTH)
+	local camY = self.y+math.ceil((mapY/WORLD_SIZE_Y)*MINIMAP_HEIGHT)
+	local camYw = self.y+math.ceil(((mapY+SCREEN_HEIGHT)/WORLD_SIZE_Y)*MINIMAP_HEIGHT)
+	drawrect(camX,camXw,camY,camYw,YELLOW)
+end
+
+--Tests if a moving object is on a minimap object
+function Minimap:isOn(cur)
+	if cur.x > self.x and cur.x < self.x+self.w and cur.y > self.y and cur.y < self.y+self.h then return true end
+	return false
+end
+
+--converts minimap coordinates to the real world scale
+function Minimap:getRealCoordinates(cursor)
+	local scaleX = (math.abs(cursor.x-self.x)*WORLD_SIZE_X)/MINIMAP_WIDTH
+	local scaleY = (math.abs(cursor.y-self.y)*WORLD_SIZE_Y)/MINIMAP_HEIGHT
+	return scaleX,scaleY
+end
+
+--draws minimap
+function Minimap:draw(key,oldkey,cursor)
+	if key:r() and not oldkey:r() then self:setVisible(not self.isVisible) 	end	
+	if self:isOn(cursor) then
+		if key:cross() and not oldkey:cross() then 
+			if unit_sel and not ((#unit_sel.index > 0) or (unit_sel.counter > 0)) and self.isVisible then
+			local scaleX,scaleY = self:getRealCoordinates(cursor)
+			mapX = scaleX-SCREEN_WIDTH/2
+			mapY = scaleY-SCREEN_HEIGHT/2
+			if map then map:resetCam() end
+			end
+		end
+	end
+	if self.isVisible then	
+	drawrect(self.x,self.x+self.w,self.y,self.y+self.h)
+	self:drawCam()
+	end
+end
+
+--[[Draws map according to the player's view.The FOV is a rectangle which bounds are
+	mapX,mapX+SCREEN_WIDTH,mapY,mapY+SCREEN_HEIGHT]]
+
+function Map:scroll(key)
+	if key:square() then
+		if key:left() then 
+			if mapX > 0 then mapX = mapX-SCROLL else mapX=0 end
+		end
+		if key:right() then
+			if mapX < WORLD_SIZE_X-SCREEN_WIDTH then mapX=mapX+SCROLL else mapX=WORLD_SIZE_X-SCREEN_WIDTH end
+		end
+		if key:up() then
+			if mapY > 0 then mapY=mapY-SCROLL else mapY=0 end
+		end
+		if key:down() then
+			if mapY < WORLD_SIZE_Y-SCREEN_HEIGHT then mapY=mapY+SCROLL else mapY=WORLD_SIZE_Y-SCREEN_HEIGHT end
+		end
+	end
+	self:resetCam()
+end
+
+--draws map
+function Map:draw(key)
+	self:scroll(key)	
+	--Drawing
+	local xint=-SCREEN_WIDTH
+	local yint=0
+	for y=1,#self do
+		for x=1,#self[1] do
+		xint=xint+SCREEN_WIDTH
+			if mapX < xint+SCREEN_WIDTH and mapX+SCREEN_WIDTH > xint and mapY<yint+SCREEN_HEIGHT and mapY+SCREEN_HEIGHT > yint then
+			screen:blit(xint-mapX,yint-mapY,grass)			
+			end
+		end
+	yint=yint+SCREEN_HEIGHT
+	xint=-SCREEN_WIDTH
+	end
+end
+
+
+	
+	
+
+
+
+

@@ -1,0 +1,189 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Resources Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 16/08/2010
+	]]
+	
+--Metatable
+Resource = {}
+
+--[[We basically have 4 types of resources:
+	*Gold : blocks 1*1 on grid
+	*Food : blocks 1*1 on grid
+	*Wood : blocks 3*2 on grid
+	*Stone : blocks 2*1 on grid]]
+
+
+resource={} --custom table which will hold all Icon objects	
+resource_last_sel_index = 0 --index variable
+
+-----------------
+--Metamethods
+-----------------
+
+--Class Constructor
+function Resource:new(param)
+	local Res = {x = param.x,y=param.y,type = param.type,stock = DEF_STOCK[param.type],selected = false}
+	if param.type == "Wood" then 
+	Res.img = res[param.type][math.random(1,4)]
+	Res.w = GRID_WIDTH*3
+	Res.h = GRID_HEIGHT*2
+	else Res.img = res[param.type]
+		if param.type == "Stone" then
+		Res.w = GRID_WIDTH*2
+		Res.h = GRID_HEIGHT
+		else
+		Res.w = GRID_WIDTH
+		Res.h = GRID_HEIGHT
+		end
+	end	
+	setmetatable(Res,self)
+	self.__index = self
+	return Res
+end
+
+--Tells if any resource is Visible on the current view
+function Resource:isVisible()	
+	if  (self.stock > 0) and ((mapX < self.x+self.w) and (mapX + SCREEN_WIDTH > self.x) and (mapY < self.y+self.h) and (mapY + SCREEN_HEIGHT > self.y)) then
+		return true
+	else
+	return false
+	end
+end
+
+--Draws resource's healthbar
+function Resource:drawHealthBar()
+local bar_length = MAX_HEALTH_BAR_LENGTH * (self.stock/DEF_STOCK[self.type])
+	drawfilledRect(self.x-mapX,self.y-5-mapY,MAX_HEALTH_BAR_LENGTH,MAX_HEALTH_BAR_HEIGHT,RED)
+	drawfilledRect(self.x-mapX,self.y-5-mapY,bar_length,MAX_HEALTH_BAR_HEIGHT,GREEN)
+end
+
+--Draws all resources
+function drawResources(key,oldkey)
+	if key:circle() and not oldkey:circle() and resource[resource_last_sel_index] then 
+	resource[resource_last_sel_index].selected = false 
+	resource_last_sel_index = nil
+	end
+	for k in ipairs(resource) do		
+		if resource[k]:isVisible() then
+			if resource_last_sel_index and k~= resource_last_sel_index then resource[k].selected = false end
+			--if isOn(cursor,resource[k],mapX,mapY) then 
+			--cursor.img = selector[resource[k].type] 
+			--else cursor.img = selector["Default"]
+			--end
+			if key:cross() and not oldkey:cross() then 
+				if isOn(cursor,resource[k],mapX,mapY) then
+				resource_last_sel_index = k
+				resource[resource_last_sel_index].selected = true 				
+				end
+			end	
+			--if isDragged(cursor.x0,cursor.y0,cursor.w0,cursor.h0,resource[k],mapX,mapY) then resource[k].selected = true end
+			if resource[k].selected then 
+			resource[k]:drawHealthBar() 
+			--print(resource[k].x-mapX,resource[k].y-10-mapY,resource[k].gatherNode.x..' '..resource[k].gatherNode.y,WHITE)
+			end
+		screen:blit(resource[k].x-mapX,resource[k].y-mapY,resource[k].img) 
+		end
+	end
+end
+
+--Looks for any resource in their table
+function Resource.find(t,x,y)
+	for k in ipairs(t) do
+		if t.gridx == x and t.gridy == y then return k end
+	end
+return nil
+end
+
+--Randomly Create resources
+function Resource.createType(inV,type,quantity)
+local randmPick,randmCell
+	if type=="Food" or type=="Gold" then
+		for i=1,quantity do
+		local MAX = #inV
+		randmPick = math.random(MAX)		
+		randmCell = inV[randmPick]
+			if grid[randmCell.gridy][randmCell.gridx] and grid[randmCell.gridy][randmCell.gridx]==0 then
+			grid[randmCell.gridy][randmCell.gridx]=1
+			table.insert(resource,Resource:new{x = ((randmCell.gridx-1)*GRID_WIDTH), y = ((randmCell.gridy-1)*GRID_HEIGHT),type = type})
+			resource[#resource].gatherNode = {x = randmCell.gridx-1, y =  randmCell.gridy}		
+			table.remove(inV,randmPick)
+			end
+		end	
+	elseif type=="Stone" then
+		for i=1,quantity do
+		local MAX = #inV
+		randmPick = math.random(MAX)		
+		randmCell = inV[randmPick]	
+			for x = randmCell.gridx,randmCell.gridx+1 do
+				if  not (grid[randmCell.gridy][x]) or  (grid[randmCell.gridy][x]==1) then break
+				else
+				grid[randmCell.gridy][randmCell.gridx]=1
+				grid[randmCell.gridy][randmCell.gridx+1]=1
+				table.insert(resource,Resource:new{x = ((randmCell.gridx-1)*GRID_WIDTH), y = ((randmCell.gridy-1)*GRID_HEIGHT),type = type})				resource[#resource].gatherNode = {x = randmCell.gridx-1, y =  randmCell.gridy}
+				table.remove(inV,randmPick)
+				local pos = Resource.find(inV,randmCell.gridx+1,randmCell.gridy)
+					if pos then table.remove(inV,pos) end
+				end
+			end
+		end
+	elseif type=="Wood" then
+		for i=1,quantity do
+		local MAX = #inV
+		randmPick = math.random(MAX)		
+		randmCell = inV[randmPick]	
+		local mayCreate = true
+			for y = randmCell.gridy,randmCell.gridy+1 do
+				for x = randmCell.gridx,randmCell.gridx+2 do
+					if  not (grid[y]) or not(grid[y][x]) then mayCreate = false break 
+					else
+						if (grid[y][x]==1) then mayCreate = false break end
+					end
+				end
+			end
+			if mayCreate then
+			table.insert(resource,Resource:new{x = ((randmCell.gridx-1)*GRID_WIDTH), y = ((randmCell.gridy-1)*GRID_HEIGHT),type = type})	 
+			resource[#resource].gatherNode = {x = randmCell.gridx-1, y =  randmCell.gridy+1}
+				for y = randmCell.gridy,randmCell.gridy+1 do
+					for x = randmCell.gridx,randmCell.gridx+2 do
+					grid[y][x]=1
+					local pos = Resource.find(inV,x,y)
+						if pos then table.remove(inV,pos) end
+					end
+				end
+			end
+		end					
+	end	
+	
+end
+
+--Inits resources creation Process
+function Resource.init(resourceToCreate)
+	local v = {}	
+	for k in ipairs(grid) do
+		if k > 2 then
+			for j in ipairs(grid[k]) do
+				if j > 2 then
+				table.insert(v,{gridx = j, gridy = k})
+				end
+			end
+		end
+	end
+	
+	math.randomseed(os.time())
+	Resource.createType(v,"Food",resourceToCreate.food)
+	Resource.createType(v,"Gold",resourceToCreate.gold)
+	Resource.createType(v,"Stone",resourceToCreate.stone)
+	Resource.createType(v,"Wood",resourceToCreate.wood)
+end
+
+
+
+
+	
+	
+
+
+
+

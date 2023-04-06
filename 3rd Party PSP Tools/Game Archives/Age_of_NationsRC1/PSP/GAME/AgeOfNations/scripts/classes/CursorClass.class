@@ -1,0 +1,88 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Mouse Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 25/07/2010
+	]]
+	
+--Metatable
+Mouse = {x = 0, y = 0, w = 0, h = 0}
+
+-----------------
+--Metamethods
+-----------------
+
+--Class constructor
+function Mouse:init(param)
+	local o = {	plantItem = false, createObject = '',
+				x = param.x or SCREEN_WIDTH/2,y = param.y or SCREEN_HEIGHT/2,
+				w = param.w or 15,h = param.h or 16,img = selector["Default"],
+				scroll = 3,x0=0,y0=0,w0=0,h0=0}
+	setmetatable(o,self)
+	self.__index = self
+	return o
+end
+
+--Draws a mouse object
+function Mouse:draw(key,oldkey)
+	--Using Analog
+	local ax = key:analogX()
+	local ay = key:analogY()
+	if ax>50 then if self.x < 480-1 then self.x = self.x+2 end end 
+	if ax<-50 then if self.x > 0 then self.x = self.x-2 end end
+	if ay>50 then if self.y< 272-1 then self.y = self.y+2 end  end
+	if ay<-50 then if self.y > 0 then self.y = self.y-2   end end
+	if ax>80 then if self.x < 480-1 then self.x = self.x+4   end end
+	if ax<-80 then if self.x > 0 then self.x = self.x-4  end end
+	if ay>80 then if self.y< 272-1 then self.y = self.y+4   end end
+	if ay<-80 then if self.y > 0 then self.y = self.y-4   end end
+	if ax>120 then if self.x < 480-1 then self.x = self.x+6  end end
+	if ax<-120 then if self.x > 0 then self.x = self.x-6  end end
+	if ay>120 then if self.y< 272-1 then self.y = self.y+6 end  end
+	if ay<-120 then if self.y > 0 then self.y = self.y-6  end end
+
+	--Cursor Dpad Control
+	if not key:square() then
+		if key:up() then self.y = self.y-self.scroll
+		elseif key:down() then self.y=self.y+self.scroll
+		end
+		if key:left() then self.x=self.x-self.scroll
+		elseif key:right() then self.x=self.x+self.scroll
+		end
+	end
+	
+	--Enables Map Scrolling when out of screen bounds
+	if self.x < 0 then 
+	self.x = 0
+		if mapX > 0 then mapX=mapX-SCROLL end
+	elseif self.x + self.w > SCREEN_WIDTH then	
+		if mapX < WORLD_SIZE_X then 
+			if mmap and not ((self.x >mmap.x) and (self.y > mmap.y) and (self.y < mmap.y+mmap.h)) then mapX=mapX+SCROLL end
+		end
+	end
+	if self.y < 0 then
+	self.y = 0
+		if mapY > 0 then mapY=mapY-SCROLL end
+	elseif self.y+self.h > SCREEN_HEIGHT and not Mainboard.isVisible then	
+		if mapY < WORLD_SIZE_Y then mapY=mapY+SCROLL end
+	end
+	
+	--DragBox
+	if not key:cross() and not oldkey:cross() then self.x0,self.y0,self.w0,self.h0=self.x,self.y,0,0 end
+	if key:cross() and not oldkey:cross() then self.x0,self.y0=self.x,self.y end
+	if key:cross() then	self.w0,self.h0=self.x-self.x0,self.y-self.y0 end
+	
+	
+	if key:circle() and not oldkey:circle() and self.plantItem then
+	self.plantItem = false
+	self.img = selector["Default"]
+	self.createObject = ''
+	end
+	
+	drawrect(self.x0,self.x0+self.w0,self.y0,self.y0+self.h0,WHITE)
+	screen:blit(self.x,self.y,self.img)	
+end
+
+
+
+

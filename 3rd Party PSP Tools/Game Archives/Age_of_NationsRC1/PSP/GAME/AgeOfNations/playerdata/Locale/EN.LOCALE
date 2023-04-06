@@ -1,0 +1,22 @@
+--[[	AoN
+		English Dialog file
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 18/08/2010
+	]]
+
+
+dialog = {}
+dialog['pause'] = 'Pause - Press O to Resume...'
+dialog['quit'] = 'Quit ?'
+dialog.mainmenu = {"Campaign","Options","Credits","Exit"}
+dialog.lang = {'Language : '}
+dialog.exit =' Do you want to exit the game ? '
+dialog[1] = 'In this game, you will use the cursor most of the time.So you have to get familiar with it.\nYou can move the cursor pressing directional pad.Try to go up, down, left and right.'
+dialog[2]= 'You can also move the cursor using analog.\nJust try and see.'
+dialog[3]= 'You will now learn map scrolling.\nYou can easily scroll the map by pressing down Square buttons,while using directional buttons to move around.\nTry this please, and move in all directions.'
+dialog[4]='Now you will learn the basics about Mini-map.\nThis is a useful tool to have a quick overview on the whole world, and move fast from one point to another.\nYou can activate/deactivate Mini-map pressing R trigger.\nActivate Mini-map, use it to move anywhere you want to, and deactivate it to continue.'
+dialog[5]='Now you will move some units.\nFirst, select a unit by clicking on it using Cross button, then move him to the lower right corner of the map using Cross button.\nIn this game, units move are computed using an algorithm which help them avoid static obstacles.'
+dialog[6]='Now we will cover the basics about resources.\nPeasant-type units can collect 4 types of resources: \n * Food \n * Wood \n * Stone \n * Stone \nYou can use those resources o build/repair builds, and create new types of units.\nJust select any peasant unit, and click on any resource you want to collect. Simple, isn\'t it ?\n Now collect 100 from each type of resources to continue.'
+dialog[7] = 'Peasant-type units can build.\nJust select any peasant-type unit,then select any type of build you can afford according to your resources, and then click on any avalailable location on the map using Cross button, and let the unit perform until it ends.\nBuild a House and a TownCenter to continue.'
+dialog[8] = 'Congratulations!\nNow that you got the basics, you can continue a free game discover some other features.'

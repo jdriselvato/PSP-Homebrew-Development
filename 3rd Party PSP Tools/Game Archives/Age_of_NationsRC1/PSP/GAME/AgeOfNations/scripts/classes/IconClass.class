@@ -1,0 +1,157 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Icon Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 25/07/2010
+	]]
+	
+	
+--Info Board Parameters
+Mainboard = { img = mainboard_img, x = 0, y =SCREEN_HEIGHT-30, w = 480, h = 30, isVisible = false, defineScreen = function(self)
+				if self.isVisible then SCREEN_HEIGHT = 272-self.h
+				else SCREEN_HEIGHT = 272
+				end
+end}
+
+
+--Metatable
+Icon = {w = 24, h =24}
+
+icon = {} --custom table which will hold all Icon objects
+
+----------------------
+--Methamethods
+----------------------
+
+--Class constructor
+function Icon:new(param)
+	local ic = {x = param.x,y = param.y,img = param.img,isVisible = false,desc = param.desc,typewriterI = 0,tmpdesc='',createObject = param.createObject}
+	setmetatable(ic,self)
+	self.__index = self
+	return ic
+end
+
+--typewriter animation for icon description printing
+function Icon:typewriterDesc()	
+	if self.typewriterI<= string.len(self.desc) and self.tmpdesc ~= self.desc then self.typewriterI=self.typewriterI+1
+	self.tmpdesc = string.sub(self.desc,1,self.typewriterI)
+		if self.tmpdesc ~= self.desc then return self.tmpdesc else return self.desc end
+	else
+	self.tmpdesc=''
+	print(10,SCREEN_HEIGHT-10,self.strCost) 	
+	return self.desc
+	end
+end
+
+--Tests if an icon can create the item it was designed for according to the player's resources.
+function Icon:mayCreateObject()
+	for k in pairs(COST[self.createObject]) do
+		if COST[self.createObject][k] > playerRes[k] then return false end
+	end
+	return true
+end
+
+--Withdraw player's resources
+function Icon:consumeCost(playerRes)
+	for k in pairs(COST[self.createObject]) do
+	playerRes[k] = playerRes[k] - COST[self.createObject][k]
+	end
+end
+
+--tests if amoving object is on an icon
+function Icon:isOn(o)
+	if o.x > self.x and o.x < self.x+self.w and o.y > self.y and o.y < self.y+self.h then return true end
+	return false
+end
+
+--specific to icon designed for updates (somewhat roughly coded, anyway...)
+function Icon:applyUpdate(unit,IncrementValue)
+local type = string.get2ndWord(self.createObject)
+print(10,100,type)
+	for k in pairs(unit) do
+		if unit[k].type and unit[k].type==type then unit[k].atk = (unit[k].atk+IncrementValue) end
+	end
+self.isVisible = false
+end
+
+--draws all icons objects
+function drawIcons(key,oldkey,...)		
+	for _,index in ipairs(arg) do
+		if icon[index] then
+			if icon[index].isVisible then 
+			screen:blit(icon[index].x,icon[index].y,icon[index].img)
+				if icon[index]:isOn(cursor) then 
+					if not icon[index].strCost then icon[index].strCost = ''
+						for k,v in pairs(COST[icon[index].createObject]) do
+							if v~=0 then icon[index].strCost = icon[index].strCost..k..': '..v..' ' end
+						end
+					end
+				print(10,SCREEN_HEIGHT-20,icon[index]:typewriterDesc(),YELLOW) 			
+					if key:cross() and not oldkey:cross() then 
+						if icon[index]:mayCreateObject() then 
+						cursor.plantItem = true
+						cursor.createObject = icon[index].createObject
+							if build_img[icon[index].createObject] then	cursor.img = build_img[icon[index].createObject] 
+							elseif unit_img[icon[index].createObject] then 
+							cursor.plantItem = false
+							cursor.createObject = ''
+								if build[build_last_sel_index] then 
+									if build[build_last_sel_index].health > (BUILD_DEFAULT_HEALTH[build[build_last_sel_index].type]/2)and not build[build_last_sel_index].state then 
+										if not string.find(icon[index].createObject,"Age") then build[build_last_sel_index].state=icon[index].createObject end
+									end
+								end
+							elseif string.find(icon[index].createObject,"Age") then
+							cursor.createObject = ''
+							cursor.plantItem = false							
+								if build[playerRes.townCenterIndex].health > (BUILD_DEFAULT_HEALTH[build[playerRes.townCenterIndex].type]/2) and not build[playerRes.townCenterIndex].state then
+								build[playerRes.townCenterIndex].state = icon[index].createObject
+									if playerRes.age:mayEvolve(playerRes) then									
+									playerRes.age.progress = true
+									end							
+								end
+							elseif string.find(icon[index].createObject,"Update") then 
+							cursor.plantItem = false
+							cursor.createObject = ''
+								if icon[index]:mayCreateObject() then 
+								icon[index]:consumeCost(playerRes)
+								icon[index]:applyUpdate(unit,5)
+								end
+							end
+						end
+					end
+				else 
+				icon[index].typewriterI = 0
+				icon[index].tmpdesc =''			
+				end
+			 end		
+		end
+	end
+end
+
+
+--Creates All Icons
+for i = 1,6 do
+	local param = { x =10+34*(i-1), y = SCREEN_HEIGHT-26,img = icon_img[i],desc = icon_desc[i]}
+	param.createObject = string.get2ndWord(icon_desc[i])
+	icon[i] = Icon:new(param) 															-- Peasant Tasks Icons
+end
+icon[8] = Icon:new{x = 10, y = SCREEN_HEIGHT-26, img = icon_img[8],desc =icon_desc[8],createObject = "Peasant"} --TownCenter: create Peasant Icon
+icon[16] = Icon:new{x = 10+34, y = SCREEN_HEIGHT-26, img = icon_img[16],desc =icon_desc[16],createObject = "Age2"} --TownCenter: Update Age 2
+icon[17] = Icon:new{x = 10+34, y = SCREEN_HEIGHT-26, img = icon_img[17],desc =icon_desc[17],createObject = "Age3"} --TownCenter: Update Age 3
+icon[9] = Icon:new{x = 10,y = SCREEN_HEIGHT-26, img = icon_img[9],desc =icon_desc[9],createObject = "Horseman"} --Stable: create Horseman Icon
+icon[10] = Icon:new{x = 10+34,y = SCREEN_HEIGHT-26, img = icon_img[10],desc =icon_desc[10],createObject = "Update Horseman"} --Stable: Update Horseman Icon
+icon[11] = Icon:new{x = 10, y = SCREEN_HEIGHT-26, img = icon_img[11],desc =icon_desc[11],createObject = "Soldier"} --Barrack: create Soldier Icon
+icon[12] = Icon:new{x = 10+34,y = SCREEN_HEIGHT-26, img = icon_img[12],desc =icon_desc[12],createObject = "Bowman"} --Barrack: create Bowman Icon
+icon[13] = Icon:new{x = 10+34*2,y = SCREEN_HEIGHT-26, img = icon_img[13],desc =icon_desc[13],createObject = "Update Soldier"} --Barrack: Update Soldier Icon
+icon[14] = Icon:new{x = 10+34*3,y = SCREEN_HEIGHT-26, img = icon_img[14],desc =icon_desc[14],createObject = "Update Bowman"} --:Barrack: Update Bowman Icon
+icon[15] = Icon:new{x = 10,y = SCREEN_HEIGHT-26, img = icon_img[15],desc =icon_desc[15],createObject = "Priest"} --Temple: create Priest Icon
+
+--sets visible all available icons
+local setVisible = {1,2,8,16}
+for k,iconIndex in ipairs(setVisible) do
+icon[iconIndex].isVisible = true
+end
+
+
+
+

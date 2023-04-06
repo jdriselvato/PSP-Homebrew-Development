@@ -1,0 +1,182 @@
+--[[	AoN
+		Tutorial Campaign
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 18/08/2010
+	]]
+
+--Sets global
+GameState = {}
+_exit = {}
+current_game_state = 1
+
+
+
+-------Cursor Move with D-Pad
+_exit[1] = function(t)
+	for k in pairs(t) do
+		if t[k]==false then return false end
+	end
+	return true
+end
+
+GameState[1] = function(pad,oldpad)
+	if not keys then 
+	keys = {up = false, down = false, left = false, right = false}
+	System.message(dialog[1],0)
+	end
+	if pad and oldpad then
+		if pad:up() and not oldpad:up() then keys.up = true end
+		if pad:down() and not oldpad:down() then keys.down = true end
+		if pad:left() and not oldpad:left() then keys.left = true end
+		if pad:right() and not oldpad:right() then keys.right = true end
+	end	
+	if _exit[current_game_state](keys) then keys = nil current_game_state = current_game_state+1 end	
+end
+
+-------Cursor Move with Analog
+_exit[2]=_exit[1]
+
+GameState[2] = function(pad,oldpad)
+	if not analog then 
+	analog = {up = false, down = false, left = false, right = false}
+	System.message(dialog[2],0)
+	end
+	if pad then
+		if pad:analogX() > 80 then analog.right = true end
+		if pad:analogX() < -80 then analog.left = true end
+		if pad:analogY() > 80 then analog.down = true end
+		if pad:analogY() < -80 then analog.up = true end
+	end	
+	if _exit[current_game_state](analog) then analog = nil current_game_state = current_game_state+1 end	
+end
+
+-------Map Scrolling
+_exit[3] = _exit[1]
+
+GameState[3] = function(pad,oldpad)
+	if not initX and not initY then 	
+	mapX, mapY = (WORLD_SIZE_X/2)-(SCREEN_WIDTH/2),(WORLD_SIZE_Y/2)-(SCREEN_HEIGHT/2)
+	initX,initY = mapX,mapY 
+	System.message(dialog[3],0)
+	end
+	if not analog then analog = {up = false, down = false, left = false, right = false} end
+	if (initX-mapX) >= (SCREEN_WIDTH/2) then analog.left = true end 
+	if (mapX-initX) >= (SCREEN_WIDTH/2) then analog.right = true end
+	if (initY-mapY) >= (SCREEN_HEIGHT/2) then analog.up = true end 
+	if (mapY-initY) >= (SCREEN_HEIGHT/2) then analog.down = true end 
+	if _exit[current_game_state](analog) then
+	analog,initX,initY=nil,nil,nil
+	current_game_state = current_game_state + 1
+	end
+end
+	
+-------Enabling/disabling minimap
+_exit[4] = function(count)
+	if count >= 2 then return true end
+return false
+end
+
+GameState[4] = function(pad,oldpad)
+	if not mmap_checked then 
+	mmap_checked = 0 
+	System.message(dialog[4],0)
+	end
+	if mmap and pad and oldpad then
+		if pad:r() and not oldpad:r() then mmap_checked = mmap_checked+1 end
+	end
+	if _exit[current_game_state](mmap_checked) then
+	mmap_checked = nil
+	current_game_state = current_game_state + 1
+	end
+end
+
+-------Select Unit/Move Unit
+_exit[5]=_exit[1]
+
+GameState[5] = function(pad,oldpad)
+	if (init==nil) then 	
+	unit[1] = Unit:new{x = 80, y = 70, type = "Peasant"}
+	initX,initY = unit[1].x,unit[1].y
+	init=false
+	achieve = {obj1=false,obj2=false}
+	System.message(dialog[5],0)
+	end
+	if unit[1].selected then achieve.obj1 = true end
+	if math.abs(unit[1].x-WORLD_SIZE_X) <= SCREEN_WIDTH and math.abs(unit[1].y-WORLD_SIZE_Y) <= SCREEN_HEIGHT then achieve.obj2 = true end
+	if _exit[current_game_state](achieve) then
+	unit[1],init,initX,initY=nil,nil,nil,nil
+	current_game_state = current_game_state+1
+	end
+end
+
+-------Gather resources
+_exit[6]=_exit[1]
+GameState[6] = function(pad,oldpad)
+	if (init==nil) then
+	unit[1] = Unit:new{x = 80, y = 70, type = "Peasant"}
+	unit[2] = Unit:new{x = 110, y = 70, type = "Peasant"}
+	init=false
+	achieve={Food = false,Wood=false,Stone=false,Gold=false}
+	System.message(dialog[6],0)
+	end
+	if playerRes then
+		for k in pairs(achieve) do
+			if playerRes[k] and playerRes[k] > 100 then achieve[k]=true end
+		end
+	end
+	if _exit[current_game_state](achieve) then
+	achieve,init=nil,nil
+	current_game_state = current_game_state+1
+	end
+end
+
+------Build
+_exit[7]=_exit[1]
+GameState[7] = function(pad,oldpad)
+	if (init==nil) then
+	unit[1] = Unit:new{x = 80, y = 70, type = "Peasant"}	
+	init=false
+	achieve = {['House'] = false,['TownCenter']=false}
+	System.message(dialog[7],0)
+	end
+	if build then
+		for k in ipairs(build) do		
+			if build[k].type=='House' and build[k].health >= BUILD_DEFAULT_HEALTH["House"] then achieve.House = true
+			elseif build[k].type=='TownCenter' and build[k].health >= BUILD_DEFAULT_HEALTH["TownCenter"] then achieve.TownCenter = true
+			end
+		end
+	end
+	if _exit[current_game_state](achieve) then
+	achieve,init=nil,nil
+	current_game_state = current_game_state+1
+	System.message(dialog[8],0)
+	end
+end
+
+------FreePlay
+GameState[8] = function(pad,oldpad)
+
+end
+
+
+function runDemo(pad,oldpad)
+GameState[current_game_state](pad,oldpad)
+	if pad and oldpad then
+		if pad:start() and not oldpad:start() then	
+			while true do
+			screen:clear()			
+			Anim3D.drawAnimation()	
+			printCenter(140,dialog.pause,YELLOW)			
+				if Controls.read():circle() then break end
+			swapBuffers()
+			end
+		end
+		if pad:select() and not oldpad:select() then
+		System.message(dialog['quit'],1)
+			if System.buttonPressed(1)=="yes" then 
+			current_game_state = nil
+			end		
+		end
+	end
+end

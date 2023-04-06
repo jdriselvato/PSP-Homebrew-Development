@@ -1,0 +1,161 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Age Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 25/07/2010
+	]]
+
+--Metatable	
+Build = {}
+
+
+build = {} --Will hold all builds objects
+build_last_sel_index = 0 -- Custom var to keep the index of the last selected build
+
+------------------
+---Metamethods
+------------------
+
+--Class constructor
+function Build:new(param)
+	local b = {x = param.x,y = param.y, type = param.type,health = 1,state = false,timer = 0,
+				selected = false,img = build_img["Default"],w = build_img["Default"]:width(), h = build_img[param.type]:height(),
+				entranceNode = {x = math.floor(param.x/GRID_WIDTH)+1+BUILD_BOUNDARIES[param.type].w-1, 
+								y = math.floor(param.y/GRID_HEIGHT)+1+BUILD_BOUNDARIES[param.type].h}
+				}
+	
+	--Specific parameters
+	if param.type == "TownCenter" then b.callIconIndex = {8,16,17}
+	elseif param.type == "Barrack" then b.callIconIndex = {11,12,13,14}
+	elseif param.type == "Stable" then b.callIconIndex = {9,10}
+	--elseif param.type == "Market" then b.callIconIndex = {16,17}
+	elseif param.type == "Temple" then b.callIconIndex = {15}
+	end				
+	setmetatable(b,self)
+	self.__index = self
+	return b
+end
+
+
+--Tests if a build is visible on field of vision
+function Build:isVisible()
+	if  (self.health >=0) and ((mapX < self.x+self.w) and (mapX + SCREEN_WIDTH > self.x) and (mapY < self.y+self.h) and (mapY + SCREEN_HEIGHT > self.y)) then
+		return true
+	else
+	return false
+	end
+end
+
+--sets build pic according to its health level
+function Build:setImage()
+	if self.health < (BUILD_DEFAULT_HEALTH[self.type])*0.4 then
+	self.img = build_img["Default"]
+	else 
+	self.img = build_img[self.type]
+	self.w = self.img:width()
+	self.h = self.img:height()
+	end
+end
+
+--updates the pathfinding grid when build is removed
+function Build:clearGrid()
+local clearFieldX, clearFieldY = BUILD_BOUNDARIES[self.type].w,BUILD_BOUNDARIES[self.type].h
+local buildX,buildY = math.floor(self.x/GRID_WIDTH)+1,math.floor(self.y/GRID_HEIGHT)+1
+	if clearFieldX and clearFieldY then
+		for y = buildY,buildY+clearFieldY-1 do
+			if grid[y] then
+				for x = buildX,buildX+clearFieldX-1 do
+					if grid[y][x] then grid[y][x]=0 end
+				end
+			end
+		end
+	end
+end
+
+--calls the info board with proper icons
+function Build:callBoard(key,oldkey)
+	if self.callIconIndex then
+	Mainboard.isVisible = true
+	screen:blit(Mainboard.x,Mainboard.y,Mainboard.img)
+	drawIcons(key,oldkey,unpack(self.callIconIndex))
+	end
+end
+
+--creates new units
+function Build:createEntity(NameOfObject,key,oldkey)
+	if self.selected and key:triangle() and not oldkey:triangle() then 
+	self.state = false
+	self.timer = 0
+	end
+	if NameOfObject and not string.find(NameOfObject,"Age") then
+		if self.timer < CREATE_TIMER_MAX[self.type] then self.timer = self.timer+CREATE_TIMER_SPEED
+		else
+		self.timer = 0
+		self.state = false
+		table.insert(unit,Unit:new{x=(self.entranceNode.x-1)*GRID_WIDTH,y = (self.entranceNode.y-1)*GRID_HEIGHT,type = NameOfObject})		
+		unit[#unit]:consumeImplantCost(NameOfObject)
+		end
+	end
+end
+
+--draws build's health
+function Build:drawHealthBar()
+local bar_length =  BUILD_MAX_HEALTH_BAR_LENGTH* (self.health/BUILD_DEFAULT_HEALTH[self.type])
+	drawfilledRect(self.x-mapX,self.y-5-mapY,BUILD_MAX_HEALTH_BAR_LENGTH,BUILD_MAX_HEALTH_BAR_HEIGHT,RED)
+	drawfilledRect(self.x-mapX,self.y-5-mapY,bar_length,BUILD_MAX_HEALTH_BAR_HEIGHT,GREEN)
+end
+
+--print progress of unit creation
+function Build:printCreationInfo()
+--[[local bar_length = (self.timer/CREATE_TIMER_MAX[self.type])*MAX_CREATION_BAR_LENGTH
+	drawfilledRect(SCREEN_WIDTH-MAX_CREATION_BAR_LENGTH-20,260,MAX_CREATION_BAR_LENGTH,MAX_CREATION_BAR_HEIGHT,RED)
+	drawfilledRect(SCREEN_WIDTH-MAX_CREATION_BAR_LENGTH-20,260,bar_length,MAX_CREATION_BAR_HEIGHT,GREEN)
+--]]
+local progress = math.floor(self.timer/CREATE_TIMER_MAX[self.type])
+print(320,250,"Creating "..self.state..': '..progress..' %')
+end
+
+--draws all builds
+function drawBuilds(key,oldkey)
+	
+	if key:circle() and not oldkey:circle() and build[build_last_sel_index] then 
+	build[build_last_sel_index].selected = false 
+	build_last_sel_index = nil
+	Mainboard.isVisible = false
+	end
+	
+	for k in ipairs(build) do
+		
+		if k~= build_last_sel_index and build[k].selected then build[k].selected = false end
+		
+		if build[k].health <= 0 then
+		build[k]:clearGrid()
+		table.remove(build,k)
+		break
+		end
+		
+		if key:cross() and not oldkey:cross() then
+			if isOn(cursor,build[k],mapX,mapY) then 
+			build_last_sel_index = k
+			build[k].selected = true
+				if build[k].type == "TownCenter" then playerRes.townCenterIndex = k end
+			end
+		end		
+		
+		if build[k].selected then 
+		build[k]:callBoard(key,oldkey)
+			if build[k].state and not string.find(build[k].state,"Age") then build[k]:printCreationInfo() end			
+		end
+		build[k]:createEntity(build[k].state,key,oldkey)
+		if build[k]:isVisible() then 
+			if build[k].selected then build[k]:drawHealthBar() end
+		build[k]:setImage()
+			if mmap.isVisible then
+			local build_mmapx = mmap.x+(build[k].x/WORLD_SIZE_X)*MINIMAP_WIDTH
+			local build_mmapy = mmap.y+(build[k].y/WORLD_SIZE_Y)*MINIMAP_HEIGHT
+			drawfilledRect(build_mmapx,build_mmapy,2,2,RED)
+			end
+		screen:blit(build[k].x-mapX,build[k].y-mapY,build[k].img)
+		end
+	end
+end

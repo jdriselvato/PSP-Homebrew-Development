@@ -1,0 +1,338 @@
+--[[	AoN Game Engine 
+		Game Engine Class : Unit Class
+		Roland Yonaba (a.k.a seanpaul223)
+		seanpaul223[at]gmail[dot]com
+		Latest Update: 16/08/2010
+	]]
+
+--Metatable	
+Unit = {}
+
+unit = {} -- Will hold all units objects
+
+--Parameters for unit single and group-based moves: Stores indexes of all selected units.
+unit_sel = {counter = 0, index = {}}
+
+
+----------------
+--Metamethods
+----------------
+
+--Class constructor
+function Unit:new(param)
+	local u = {x = param.x, y = param.y,tmpX = param.x, tmpY = param.y, health = UNIT_MAX_HEALTH[param.type],
+			move = false, ordermove = false,
+			cur = 0, length = 0,timer = 0, 
+			img = unit_img[param.type][1],w = unit_img[param.type][1]:width(),h=unit_img[param.type][1]:height(),
+			selected = false,type = param.type,speed = UNIT_DEFAULT_SPEED[param.type],status = ""}
+		
+			--Specific parameters
+			if param.type == "Peasant" then u.callIconIndex = {1,2,3,4,5,6,7} 
+			else
+				if param.type~="Priest" then u.atk = DEFAULT_ATK end
+			end
+	setmetatable(u,self)
+	self.__index = self
+	return u
+end
+
+--Tell if any unit is visible in the current field of view
+function Unit:isVisible()
+	if  (self.health >=0) and ((mapX < self.x+self.w) and (mapX + SCREEN_WIDTH > self.x) and (mapY < self.y+self.h) and (mapY + SCREEN_HEIGHT > self.y)) then
+		return true
+	else
+	return false
+	end
+end
+
+--Draws any unit's healthbar
+function Unit:drawHealthBar()
+local bar_length =  MAX_UNIT_HEALTH_BAR_LENGTH* (self.health/UNIT_MAX_HEALTH[self.type])
+	drawfilledRect(self.x-mapX,self.y-5-mapY,MAX_UNIT_HEALTH_BAR_LENGTH,MAX_UNIT_HEALTH_BAR_HEIGHT,RED)
+	drawfilledRect(self.x-mapX,self.y-5-mapY,bar_length,MAX_UNIT_HEALTH_BAR_HEIGHT,GREEN)
+end
+
+--Draws the current selected unit's options
+function Unit:callBoard(key,oldkey)
+	Mainboard.isVisible = true
+	if self.type == "Peasant" then
+	screen:blit(Mainboard.x,Mainboard.y,Mainboard.img)	
+	drawIcons(key,oldkey,unpack(self.callIconIndex))
+	end
+end
+
+--Animated movement
+function Unit:moveAnim()
+	if self.move then
+	self.timer = self.timer + 1
+		if self.timer > 30 then self.timer = 1 end			
+		if self.tmpX > self.x then self.x = self.x+self.speed 
+			if self.timer >= 1 and self.timer < 10 then self.img = unit_img[self.type][1]
+			elseif self.timer >= 10 and self.timer < 20 then self.img = unit_img[self.type][2]
+			elseif self.timer >= 20 and self.timer <= 30 then self.img = unit_img[self.type][3]
+			end
+		elseif self.tmpX < self.x then self.x = self.x-self.speed
+			if self.timer >= 1 and self.timer < 10 then self.img = unit_img[self.type][4]
+			elseif self.timer >= 10 and self.timer < 20 then self.img = unit_img[self.type][5]
+			elseif self.timer >= 20 and self.timer <= 30 then self.img = unit_img[self.type][6]
+			end
+		end			
+		if self.tmpY > self.y then self.y = self.y+self.speed 
+			if self.timer >= 1 and self.timer < 10 then self.img = unit_img[self.type][10]
+			elseif self.timer >= 10 and self.timer < 20 then self.img = unit_img[self.type][11]
+			elseif self.timer >= 20 and self.timer <= 30 then self.img = unit_img[self.type][12]
+			end
+		elseif self.tmpY < self.y then self.y = self.y-self.speed
+			if self.timer >= 1 and self.timer < 10 then self.img = unit_img[self.type][7]
+			elseif self.timer >= 10 and self.timer < 20 then self.img = unit_img[self.type][8]
+			elseif self.timer >= 20 and self.timer <= 30 then self.img = unit_img[self.type][9]
+			end
+		end
+		if (math.abs(self.x-self.tmpX)<=5) and (math.abs(self.y-self.tmpY)<=5) and (self.cur<self.length) then
+		self.cur = self.cur+1
+		self.tmpX = ((self.path[self.cur].x-1) * GRID_WIDTH)
+		self.tmpY = ((self.path[self.cur].y-1) * GRID_HEIGHT)
+		end
+		if (math.abs(self.x-self.tmpX)<=5) and (math.abs(self.y-self.tmpY)<=5) and (self.cur>=self.length) then
+		self.cur = 0
+			--for _,t in ipairs(self.path) do							
+			--grid[t.y][t.x] = 0
+			--end	
+		self.path = {}
+		self.length = 0
+		self.move = false
+			if self.type == "Peasant" then self.OldImg = self.img end
+		self.timer=0
+		end
+	end	
+end
+
+--Animated task for 'peasants-type' units.
+function Unit:workAnim()
+	if not self.move and not self.ordermove then
+		if self.OnTask then
+			if resource[self.OnTaskObjectIndex] and self.OnTaskType == 'resource' then
+			local gatherX = resource[self.OnTaskObjectIndex].gatherNode.x
+			local gatherY = resource[self.OnTaskObjectIndex].gatherNode.y
+			local posX = math.floor(self.x/GRID_WIDTH)+1
+			local posY = math.floor(self.y/GRID_HEIGHT)+1
+				if resource[self.OnTaskObjectIndex].stock > 0 and math.abs(posX-gatherX) <= 1 and math.abs(posY-gatherY) <= 1 then
+				self.timer = self.timer+1
+					if self.timer > 30 then 
+					self.timer = 1 
+					resource[self.OnTaskObjectIndex].stock = resource[self.OnTaskObjectIndex].stock - PEASANT_GATHER_RESOURCE_DEFAULT
+					playerRes[resource[self.OnTaskObjectIndex].type] = playerRes[resource[self.OnTaskObjectIndex].type] + PEASANT_GATHER_RESOURCE_DEFAULT*2
+					end
+					if self.timer >= 1 and self.timer < 10 then self.img = unit_img[self.type][13]
+					elseif self.timer >=10 and self.timer <= 20 then self.img = unit_img[self.type][14]
+					end					
+				else 
+				self.img = self.OldImg
+				self.OnTask = false
+				self.OnTaskObjectIndex = nil
+				end
+			elseif build[self.OnTaskObjectIndex] and self.OnTaskType == 'repair' then
+			local actNodeX = build[self.OnTaskObjectIndex].entranceNode.x
+			local actNodeY = build[self.OnTaskObjectIndex].entranceNode.y
+			local posX = math.ceil(self.x/GRID_WIDTH)
+			local posY = math.ceil(self.y/GRID_HEIGHT)
+				if build[self.OnTaskObjectIndex].health < BUILD_DEFAULT_HEALTH[build[self.OnTaskObjectIndex].type] and math.abs(posX-actNodeX) <= 1 and math.abs(posY-actNodeY) <= 1 then
+				self.timer = self.timer+1
+					if build[self.OnTaskObjectIndex].health > BUILD_DEFAULT_HEALTH[build[self.OnTaskObjectIndex].type] then
+					build[self.OnTaskObjectIndex].health = BUILD_DEFAULT_HEALTH[build[self.OnTaskObjectIndex].type]
+					end
+					if self.timer > 30 then 
+					self.timer = 1 
+					build[self.OnTaskObjectIndex].health = build[self.OnTaskObjectIndex].health + PEASANT_REPAIR_UPVALUE
+					--playerRes.Wood = playerRes.Wood - PEASANT_REPAIR_COST
+					--playerRes.Food = playerRes.Food - PEASANT_REPAIR_COST
+					end
+					if self.timer >= 1 and self.timer < 10 then self.img = unit_img[self.type][13]
+					elseif self.timer >=10 and self.timer <= 20 then self.img = unit_img[self.type][14]
+					end					
+				else 
+				self.img = self.OldImg
+				self.OnTask = false
+				self.OnTaskObjectIndex = nil
+				end		
+			end
+		end
+	end
+end
+
+--Tells if any unit may place a construction yard according to collision grid layer
+function Unit:mayImplant(NameOfObject)
+local checkLength,checkHeight = BUILD_BOUNDARIES[NameOfObject].w,BUILD_BOUNDARIES[NameOfObject].h
+	if checkLength and checkHeight then
+		for y = self.fY+1,self.fY+1+checkHeight-1 do
+			for x = self.fX+1,self.fX+1+checkLength-1 do
+				if not grid[y] or not grid[y][x] or grid[y][x]==1 then return false end
+			end
+		end
+	end
+return true
+end
+
+--unit widthdraws player's resources when building
+function Unit:consumeImplantCost(NameOfObject)
+	for k in pairs(COST[NameOfObject]) do
+	playerRes[k] = playerRes[k]- COST[NameOfObject][k]
+	end
+end
+
+--Unit implants a new building
+function Unit:implant(NameOfObject)
+local checkLength,checkHeight = BUILD_BOUNDARIES[NameOfObject].w,BUILD_BOUNDARIES[NameOfObject].h
+	if checkLength and checkHeight then
+		for y = self.fY+1,self.fY+1+checkHeight-1 do
+			for x = self.fX+1,self.fX+1+checkLength-1 do
+				if grid[y] and grid[y][x] then grid[y][x]=1 end
+			end
+		end
+	end
+	self:consumeImplantCost(NameOfObject)
+end
+
+
+
+--draws all units
+function drawUnits(key,oldkey)		
+	unit_sel.counter = 0
+	unit_sel.index = {}	
+	for i in ipairs(unit) do
+		if unit[i].health <= 0 then 
+		table.remove(unit,i) 
+		break 
+		end	
+		--print(unit[i].x-mapX,unit[i].y-mapY-5,'order '..tostring(unit[i].ordermove)..' mov '..tostring(unit[i].move))
+		--[[
+		if unit[i].fX and unit[i].fY then
+		print(unit[i].x-mapX,unit[i].y-20-mapY,'final: '..unit[i].fX..' '..unit[i].fY)
+		end
+		if unit[i].sX and unit[i].sY then
+		print(unit[i].x-mapX,unit[i].y-10-mapY,'start: '..unit[i].sX..' '..unit[i].sY)
+		end		
+		if unit[i].selected then print(unit[i].x-mapX,unit[i].y-30-mapY,'ordermove: '..tostring(unit[i].ordermove)..' move'..tostring(unit[i].move)) end
+		--]]
+		if key:circle() and not oldkey:circle() then 
+		unit[i].selected = false 
+		unit_sel.counter = 0
+		unit_sel.index = {}
+		Mainboard.isVisible = false
+		end		
+		if isDragged(cursor.x0,cursor.y0,cursor.w0,cursor.h0,unit[i],mapX,mapY) then 
+		unit[i].selected = true 		
+		end				
+		if key:cross() and not oldkey:cross() then
+			if isOn(cursor,unit[i],mapX,mapY) then 
+			unit[i].selected = true 
+			
+			end
+		end		
+		if unit[i].selected then 
+		unit[i]:callBoard(key,oldkey)
+		table.insert(unit_sel.index,i)		
+		end
+		
+		unit_sel.counter = #unit_sel.index
+		unit[i]:moveAnim()	
+		unit[i]:workAnim()
+		if unit[i]:isVisible() then 
+			if unit[i].selected then unit[i]:drawHealthBar() end
+		screen:blit(unit[i].x-mapX,unit[i].y-mapY,unit[i].img)
+		end
+		if mmap.isVisible then		
+			local unit_mmapx = mmap.x+(unit[i].x/WORLD_SIZE_X)*MINIMAP_WIDTH
+			local unit_mmapy = mmap.y+(unit[i].y/WORLD_SIZE_Y)*MINIMAP_HEIGHT
+			drawfilledRect(unit_mmapx,unit_mmapy,1,1,GREEN)
+		end
+		if not unit[i].move and not unit[i].ordermove then
+			for k in ipairs(unit_sel.index) do
+				if (k~=i) and not unit[k].move and not unit[k].ordermove and not(unit[i].move) and not (unit[i].ordermove) then
+					if math.abs(unit[k].x-unit[i].x)<=GRID_WIDTH and math.abs(unit[k].y-unit[i].y)<=GRID_WIDTH then
+						unit[k].x = unit[k].x-1
+						unit[i].x = unit[i].x+1
+					end
+				end
+			end
+		end
+	end
+	
+	--deal with selected units pathfinding
+	if unit_sel.counter > 0 then
+		for _,index in ipairs(unit_sel.index) do
+			if unit[index] and unit[index].selected then			
+				if key:cross() and not oldkey:cross() and onScreen(cursor,SCREEN_WIDTH,SCREEN_HEIGHT) then
+				unit[index].ordermove = true
+					if not mmap:isOn(cursor) then							
+					unit[index].fY = math.floor((cursor.y+mapY)/GRID_HEIGHT)+1
+					unit[index].fX = math.floor((cursor.x+mapX)/GRID_WIDTH)+1	
+					elseif mmap:isOn(cursor) and mmap.isVisible then
+					local scaleX,scaleY = mmap:getRealCoordinates(cursor)					
+					unit[index].fY = math.floor(scaleY/GRID_HEIGHT)+1
+					unit[index].fX = math.floor(scaleX/GRID_WIDTH)+1
+					end
+				unit[index].sY = math.floor(unit[index].y/GRID_HEIGHT)+1
+				unit[index].sX = math.floor(unit[index].x/GRID_WIDTH)+1
+					if unit[index].type == "Peasant" then
+						if not cursor.plantItem and resource_last_sel_index and resource[resource_last_sel_index] then
+						unit[index].OnTaskObjectIndex = resource_last_sel_index
+						unit[index].OnTaskType = 'resource'
+						unit[index].OnTask = true	
+						unit[index].fX = resource[resource_last_sel_index].gatherNode.x 
+						unit[index].fY = resource[resource_last_sel_index].gatherNode.y 
+						resource_last_sel_index = nil
+						elseif not cursor.plantItem and build_last_sel_index and build[build_last_sel_index] then
+						unit[index].OnTaskObjectIndex = build_last_sel_index
+						unit[index].OnTaskType = 'repair'
+						unit[index].OnTask = true	
+						unit[index].fX = build[build_last_sel_index].entranceNode.x 
+						unit[index].fY = build[build_last_sel_index].entranceNode.y	
+						build_last_sel_index = nil
+						else 
+						unit[index].OnTask = false
+						unit[index].OnTaskObjectIndex = nil
+						end
+						if cursor.plantItem and unit[index]:mayImplant(cursor.createObject) then
+						unit[index]:implant(cursor.createObject)
+						table.insert(build,Build:new{x = (unit[index].fX)*GRID_WIDTH, y = (unit[index].fY)*GRID_HEIGHT,type = cursor.createObject})
+						unit[index].OnTaskObjectIndex = #build
+						unit[index].OnTaskType = 'repair'
+						unit[index].OnTask = true	
+						unit[index].fX = build[#build].entranceNode.x 
+						unit[index].fY = build[#build].entranceNode.y		
+						end
+					end
+				end
+			end		
+			if unit[index].ordermove then
+			local fNode={x=unit[index].fX,y=unit[index].fY}
+			local sNode={x=unit[index].sX,y=unit[index].sY}
+				if (fNode.x ~= sNode.x) or (fNode.y ~= sNode.y) then
+				unit[index].path=track(pathfinding(grid,sNode,fNode,1))
+					if unit[index].path == nil	then 					
+					unit[index].ordermove = false 
+					else
+					
+						--for _,t in ipairs(unit[index].path) do							
+						--grid[t.y][t.x] = 1
+						--end						
+					unit[index].length = #unit[index].path
+					unit[index].cur = 1
+					unit[index].ordermove = false
+					unit[index].tmpX = ((unit[index].path[unit[index].cur].x-1) * GRID_WIDTH)
+					unit[index].tmpY = ((unit[index].path[unit[index].cur].y-1) * GRID_HEIGHT)
+					unit[index].move = true
+					end
+				else unit[index].ordermove = false
+				--io.write('unit '..index..' '..unit[index].type..' path is idle\n')
+				--io.write('startNode : x '..unit[index].sX..' y '..unit[index].sY..'\n')
+				--io.write('endNode : x '..unit[index].fX..' y '..unit[index].fY..'\n')
+				end		
+			end
+		end
+	unit_sel.index = {}
+	unit_sel.counter = 0
+	end
+end
+
