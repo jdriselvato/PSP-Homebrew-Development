@@ -1,5 +1,4 @@
 require("lib/load_map")
-require("lib/generate_map")
 
 --//## Set CPU speed
 System.setCpuSpeed(333)
