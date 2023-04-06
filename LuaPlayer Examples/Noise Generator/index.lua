@@ -1,66 +1,32 @@
+require("lib/load_map")
+
 --//## Set CPU speed
 System.setCpuSpeed(333)
 
--- Player
-playerSprite = Image.load("gfx/sprite.png")
-player = {}
-player.x = 16
-player.y = 110
+--// Helpers
 
--- 0 = walkable tile
-walkableTile = {
-	sprite = Image.load("gfx/walkable.png"),
-	width = 16,
-	height = 16
+local numberColor = {
+  [1] = Color.new(10,203,20),
+  [2] = Color.new(50,23,20),
+  [3] = Color.new(20,43,20),
+  [4] = Color.new(25,43,20),
+  [5] = Color.new(50,3,20),
+  [6] = Color.new(94,100,20),
+  [7] = Color.new(49,130,20),
+  [8] = Color.new(43,1,20),
+  [9] = Color.new(88,2,50),
+  [10] = Color.new(40,40,20),
 }
 
--- 1 = wall
-wallTile = {
-	sprite = Image.load("gfx/wall.png"),
-	width = 16,
-	height = 16
+local block_size = {
+	width = 4,
+	height = 4
 }
-
--- 2 = water
-waterTile = {
-	sprite = Image.load("gfx/water.png"),
-	width = 16,
-	height = 16
-}
-
--- 3 = tree
-treeTile = {
-	sprite = Image.load("gfx/tree.png"),
-	width = 16,
-	height = 16
-}
-
--- Helpers
-
--- Define the size of your map in tiles
-local mapWidth = 480
-local mapHeight = 272
 
 -- Function to load the map from a CSV file
-map = {}
-function loadMap(filename)
-	-- Open the file
-	local file = io.open(filename, "rb")
-	
-	-- Read in the data
-	for line in file:lines() do
-	    local row = {}
-	    for i in string.gmatch(line, "%d+") do
-	        table.insert(row, tonumber(i))
-	    end
-	    table.insert(map, row)
-	end
-
-	file:close()
-end
+local map = loadMap("./maps/map.csv")
 
 function displayMap()
-
 	local numRows = #map
 	local numCols = #map[1]
 
@@ -68,36 +34,23 @@ function displayMap()
 	for j = 1, numRows do
 		for i = 1, numCols do
 			local tileValue = map[j][i]
-			local x = i - 1 -- arrays start at 1 in lua
-			local y = j - 1 -- arrays start at 1 in lua
-
-			if tileValue == 0 then
-				screen:blit(x * walkableTile.width, y * walkableTile.height, walkableTile.sprite)
-
-			elseif tileValue == 1 then
-				screen:blit(x * wallTile.width, y * wallTile.height, wallTile.sprite)
-
-			elseif tileValue == 2 then
-				screen:blit(x * waterTile.width, y * waterTile.height, waterTile.sprite)
-
-			elseif tileValue == 3 then
-				screen:blit(x * treeTile.width, y * treeTile.height, treeTile.sprite)
-
-			else
-				screen:blit(player.x, player.y, playerSprite)
-			end
+			screen:fillRect(
+				block_size.width * (j-1), block_size.height * (i-1),  -- x & y
+				block_size.width,  -- width
+				block_size.height, -- height
+				Color.new(
+					tileValue * (255/10),
+					tileValue * (255/10),
+					tileValue * (255/10)
+				)
+			)
 		end
 	end
 end
 
-
 --//## MAIN ##\\ --
 
--- Create a 2D array to represent your tile map
-loadMap("map1.csv")
-
 while not Controls.readPeek():start() do
-
 	--Initialize the GU (Note : Any graphical functions MUST be placed AFTER this)
 	System.draw()
 	
@@ -105,8 +58,6 @@ while not Controls.readPeek():start() do
 	screen:clear()
 
 	displayMap()
-
-	screen:blit(player.x, player.y, playerSprite)
 
 	--Finish the GU and Sync	
 	System.endDraw();

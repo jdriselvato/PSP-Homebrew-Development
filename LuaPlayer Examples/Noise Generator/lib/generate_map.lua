@@ -9,8 +9,8 @@ map_size = {
 
 -- Block template
 block_size = {
-	width = 16,
-	height = 16
+	width = 4,
+	height = 4
 }
 
 -- Define the grid size

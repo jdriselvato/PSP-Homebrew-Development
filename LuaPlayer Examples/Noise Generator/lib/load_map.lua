@@ -27,4 +27,4 @@ function loadMap(filename)
   return map
 end
 
-loadMap("map.csv")
+-- loadMap("map.csv")
